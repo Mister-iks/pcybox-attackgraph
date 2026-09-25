@@ -1,0 +1,15 @@
+name: Translation
+description: Add or improve a language
+labels: [translation]
+body:
+  - type: input
+    id: language
+    attributes:
+      label: Language
+      placeholder: Spanish (es), Arabic (ar)...
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What would you like to do?

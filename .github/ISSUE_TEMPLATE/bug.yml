@@ -1,0 +1,21 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: lab
+    attributes:
+      label: Lab or share link
+      description: If the problem depends on a lab, attach the exported .cslab.json file or paste the share link.
+  - type: input
+    id: browser
+    attributes:
+      label: Browser, device and language
+      placeholder: Firefox 140, Android phone, French

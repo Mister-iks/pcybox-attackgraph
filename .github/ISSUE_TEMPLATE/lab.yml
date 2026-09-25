@@ -1,0 +1,16 @@
+name: New lab or mission
+description: Propose a lab, a scenario or a mission
+labels: [content]
+body:
+  - type: textarea
+    id: concept
+    attributes:
+      label: What does it teach?
+      description: One or two concepts, and the misconception it corrects if any.
+    validations:
+      required: true
+  - type: textarea
+    id: architecture
+    attributes:
+      label: Architecture and scenarios
+      description: Zones, elements, identities, controls, and what changes the outcome.
