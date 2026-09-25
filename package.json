@@ -12,7 +12,9 @@
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "check:text": "node scripts/check-text.mjs",
-    "ci": "pnpm check:text && pnpm typecheck && pnpm test && pnpm build"
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "e2e": "pnpm --filter @cslab/web e2e",
+    "verify": "pnpm check:text && pnpm typecheck && pnpm test && pnpm build && pnpm check:bundle"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",
