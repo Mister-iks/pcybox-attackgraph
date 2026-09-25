@@ -1,0 +1,22 @@
+{
+  "name": "cyber-attack-surface-lab",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.0.8",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @cslab/web dev",
+    "build": "pnpm --filter @cslab/web build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "check:text": "node scripts/check-text.mjs",
+    "ci": "pnpm check:text && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  }
+}

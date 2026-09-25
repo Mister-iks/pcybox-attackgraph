@@ -1,0 +1,19 @@
+Educational content of Cyber Attack Surface Lab
+===============================================
+
+Everything under the content/ directory (labs, templates, missions and their
+translations) and the documentation under docs/ is licensed under the
+Creative Commons Attribution 4.0 International License (CC BY 4.0).
+
+You are free to share and adapt this material for any purpose, even
+commercially, as long as you give appropriate credit, provide a link to the
+license, and indicate if changes were made.
+
+Full legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+Summary:         https://creativecommons.org/licenses/by/4.0/
+
+Suggested attribution:
+  "Cyber Attack Surface Lab contributors, CC BY 4.0,
+   https://github.com/Mister-iks/cyber-attack-surface-lab"
+
+Source code is licensed separately under the Apache License 2.0 (see LICENSE).
