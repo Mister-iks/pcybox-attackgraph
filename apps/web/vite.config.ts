@@ -30,5 +30,5 @@ export default defineConfig({
   base: process.env.BASE_PATH ?? '/',
   plugins: [react(), tailwindcss(), contentSecurityPolicy()],
   worker: { format: 'es' },
-  build: { target: 'es2022', sourcemap: false },
+  build: { target: 'es2022', sourcemap: false, chunkSizeWarningLimit: 700 },
 });

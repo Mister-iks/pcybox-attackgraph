@@ -5,3 +5,6 @@ coverage/
 .DS_Store
 .vite/
 *.tsbuildinfo
+test-results/
+playwright-report/
+blob-report/
