@@ -1,6 +1,7 @@
-import type { Localized } from '@pcybox/attackgraph-engine';
-import en from './en.json';
-import fr from './fr.json';
+import en from '@pcybox/attackgraph-i18n/messages/en.json';
+import fr from '@pcybox/attackgraph-i18n/messages/fr.json';
+
+export { pick } from '@pcybox/attackgraph-i18n';
 
 export const LOCALES = {
   en: { name: 'English', dir: 'ltr', messages: en },
@@ -22,10 +23,4 @@ export function detectLocale(stored: string | null): Locale {
     if (isLocale(base)) return base;
   }
   return 'en';
-}
-
-/** Picks the best translation of a lab text, falling back to English, then to any language. */
-export function pick(text: Localized | undefined, locale: string): string {
-  if (!text) return '';
-  return text[locale] ?? text[locale.split('-')[0] ?? ''] ?? text.en ?? Object.values(text)[0] ?? '';
 }

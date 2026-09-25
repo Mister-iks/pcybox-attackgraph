@@ -21,7 +21,7 @@ Labs live in `content/templates/` as `.attackgraph.json` files ([format](docs/la
 
 ## 4. Translate
 
-All interface texts are in `apps/web/src/i18n/<language>.json` ([ICU MessageFormat](https://formatjs.github.io/docs/core-concepts/icu-syntax/)); lab texts are inside the labs. To add a language, copy `en.json`, translate the values (never the keys or the `{placeholders}`), and register it in `apps/web/src/i18n/locales.ts`. The tests check that every key exists and every message is valid. A language is published when it is complete and has a reviewer.
+All interface texts are in `packages/i18n/messages/<language>.json` ([ICU MessageFormat](https://formatjs.github.io/docs/core-concepts/icu-syntax/)); lab texts are inside the labs. To add a language, copy `en.json`, translate the values (never the keys or the `{placeholders}`), and register it in `apps/web/src/i18n/locales.ts`. The tests check that every key exists and every message is valid. A language is published when it is complete and has a reviewer.
 
 ## Development setup
 

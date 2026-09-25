@@ -1,0 +1,21 @@
+{
+  "name": "@pcybox/attackgraph-i18n",
+  "version": "0.2.0",
+  "description": "Messages (ICU) and lab text formatting shared by the PCYBOX AttackGraph app and command line tool.",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./messages/*.json": "./messages/*.json"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@pcybox/attackgraph-engine": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

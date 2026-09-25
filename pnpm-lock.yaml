@@ -23,6 +23,9 @@ importers:
       '@pcybox/attackgraph-engine':
         specifier: workspace:*
         version: link:../../packages/engine
+      '@pcybox/attackgraph-i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@xyflow/react':
         specifier: ^12.12.0
         version: 12.12.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -76,6 +79,28 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1(@types/node@26.6.2)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))
 
+  packages/cli:
+    dependencies:
+      '@pcybox/attackgraph-engine':
+        specifier: workspace:*
+        version: link:../engine
+      '@pcybox/attackgraph-i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      intl-messageformat:
+        specifier: ^12.1.2
+        version: 12.1.2
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.2
+        version: 26.6.2
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@types/node@26.6.2)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))
+
   packages/engine:
     devDependencies:
       '@types/node':
@@ -87,6 +112,16 @@ importers:
       vitest:
         specifier: ^5.0.1
         version: 5.0.1(@types/node@26.6.2)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))
+
+  packages/i18n:
+    dependencies:
+      '@pcybox/attackgraph-engine':
+        specifier: workspace:*
+        version: link:../engine
+    devDependencies:
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
 
   packages/schema:
     devDependencies:

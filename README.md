@@ -65,6 +65,8 @@ The engine saturates the attacker's capabilities round by round (footholds, cred
 apps/web/           web application (React, React Flow, Vite)
 packages/engine/    simulation engine: pure TypeScript, no DOM, fully tested
 packages/schema/    JSON Schema of the .attackgraph.json lab format
+packages/i18n/      messages (English, French) shared by the app and the CLI
+packages/cli/       attackgraph command line tool
 content/templates/  ready-to-use labs (CC BY 4.0)
 docs/               specification, engine and format documentation
 ```
@@ -79,6 +81,16 @@ pnpm dev             # start the app
 pnpm test            # engine, schema and app unit tests
 pnpm e2e             # end-to-end tests (Playwright, desktop and mobile)
 pnpm verify          # everything the CI checks: text, types, tests, build, bundle budget
+```
+
+### Command line
+
+```bash
+pnpm attackgraph validate content/templates
+pnpm attackgraph list content/templates/active-directory.attackgraph.json
+pnpm attackgraph simulate content/templates/active-directory.attackgraph.json --scenario phishing --enable tiering
+pnpm attackgraph compare content/templates/web-application.attackgraph.json --enable segmentation --lang fr
+pnpm attackgraph simulate <lab> --format markdown   # or json, for other tools
 ```
 
 Performance budget: at most 250 kB of initial JavaScript (gzip). The CI fails above it.
