@@ -1,0 +1,189 @@
+{
+  "$schema": "../../packages/schema/lab.schema.json",
+  "formatVersion": "0.1.0",
+  "id": "tpl-web-application",
+  "meta": {
+    "title": { "en": "Web Application", "fr": "Application web" },
+    "description": {
+      "en": "A public web server, an internal API and a customer database. The internal network is flat and the web server keeps secrets it does not need.",
+      "fr": "Un serveur web public, une API interne et une base clients. Le réseau interne est plat et le serveur web conserve des secrets dont il n'a pas besoin."
+    },
+    "authors": ["Cyber Attack Surface Lab contributors"],
+    "license": "CC-BY-4.0",
+    "difficulty": "beginner",
+    "tags": ["segmentation", "credential-access", "defense-in-depth"]
+  },
+  "zones": [
+    { "id": "internet", "type": "internet", "label": { "en": "Internet", "fr": "Internet" } },
+    { "id": "dmz", "type": "dmz", "label": { "en": "DMZ", "fr": "DMZ" } },
+    { "id": "internal", "type": "internal", "label": { "en": "Internal", "fr": "Interne" } },
+    { "id": "management", "type": "management", "label": { "en": "Management", "fr": "Administration" } }
+  ],
+  "nodes": [
+    {
+      "id": "internet",
+      "type": "internet",
+      "label": { "en": "Internet", "fr": "Internet" },
+      "zone": "internet",
+      "services": [],
+      "weaknesses": [],
+      "secrets": [],
+      "position": { "x": 0, "y": 150 }
+    },
+    {
+      "id": "web-01",
+      "type": "web-server",
+      "label": { "en": "Web Server", "fr": "Serveur web" },
+      "zone": "dmz",
+      "services": [
+        { "id": "https", "kind": "web", "port": 443, "protocol": "tcp", "auth": "none", "runsAs": "user", "weaknesses": ["vulnerable-component"] },
+        { "id": "ssh", "kind": "ssh", "port": 22, "protocol": "tcp", "auth": "key", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": ["unpatched-os"],
+      "secrets": [
+        { "identity": "svc-db-app", "kind": "config", "requires": "user" },
+        { "identity": "adm-ops", "kind": "cached-credential", "requires": "admin" }
+      ],
+      "position": { "x": 280, "y": 150 }
+    },
+    {
+      "id": "api-01",
+      "type": "api-server",
+      "label": { "en": "Orders API", "fr": "API commandes" },
+      "zone": "internal",
+      "services": [
+        { "id": "https", "kind": "api", "port": 8443, "protocol": "tcp", "auth": "token", "runsAs": "user", "weaknesses": [] },
+        { "id": "ssh", "kind": "ssh", "port": 22, "protocol": "tcp", "auth": "key", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": [],
+      "secrets": [{ "identity": "svc-db-app", "kind": "config", "requires": "user" }],
+      "position": { "x": 580, "y": 60 }
+    },
+    {
+      "id": "db-01",
+      "type": "database",
+      "label": { "en": "Customer Database", "fr": "Base clients" },
+      "zone": "internal",
+      "services": [
+        { "id": "postgres", "kind": "database", "port": 5432, "protocol": "tcp", "auth": "password", "runsAs": "user", "weaknesses": [] },
+        { "id": "ssh", "kind": "ssh", "port": 22, "protocol": "tcp", "auth": "key", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": [],
+      "secrets": [],
+      "position": { "x": 880, "y": 150 }
+    },
+    {
+      "id": "jump-01",
+      "type": "jump-host",
+      "label": { "en": "Admin Jump Host", "fr": "Bastion d'administration" },
+      "zone": "management",
+      "services": [],
+      "weaknesses": [],
+      "secrets": [],
+      "position": { "x": 580, "y": 400 }
+    }
+  ],
+  "edges": [
+    { "id": "f-internet-web", "source": "internet", "target": "web-01", "port": 443, "protocol": "tcp" },
+    { "id": "f-web-api", "source": "web-01", "target": "api-01", "port": 8443, "protocol": "tcp" },
+    { "id": "f-api-db", "source": "api-01", "target": "db-01", "port": 5432, "protocol": "tcp" },
+    { "id": "f-jump-web", "source": "jump-01", "target": "web-01", "port": 22, "protocol": "tcp" },
+    { "id": "f-jump-api", "source": "jump-01", "target": "api-01", "port": 22, "protocol": "tcp" },
+    { "id": "f-jump-db", "source": "jump-01", "target": "db-01", "port": 22, "protocol": "tcp" }
+  ],
+  "identities": [
+    {
+      "id": "svc-db-app",
+      "type": "service-account",
+      "label": { "en": "Database service account", "fr": "Compte de service base de données" },
+      "privileges": [{ "node": "db-01", "level": "user", "via": ["database"] }]
+    },
+    {
+      "id": "adm-ops",
+      "type": "admin",
+      "label": { "en": "Operations administrator", "fr": "Administrateur exploitation" },
+      "privileges": [
+        { "node": "web-01", "level": "admin", "via": ["ssh"] },
+        { "node": "api-01", "level": "admin", "via": ["ssh"] },
+        { "node": "db-01", "level": "admin", "via": ["ssh"] }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "customer-data",
+      "kind": "customer-data",
+      "label": { "en": "Customer data", "fr": "Données clients" },
+      "node": "db-01",
+      "requires": "admin",
+      "cia": { "c": 4, "i": 3, "a": 3 }
+    }
+  ],
+  "controls": [
+    {
+      "id": "segmentation",
+      "type": "segmentation",
+      "label": { "en": "Network segmentation", "fr": "Segmentation réseau" },
+      "description": {
+        "en": "Between zones, only the declared flows are allowed (Web to API, API to database, admin through the jump host).",
+        "fr": "Entre zones, seuls les flux déclarés sont autorisés (web vers API, API vers base, administration par le bastion)."
+      },
+      "enabled": false
+    },
+    {
+      "id": "vault-web",
+      "type": "secrets-vault",
+      "label": { "en": "Remove secrets from the web server", "fr": "Retirer les secrets du serveur web" },
+      "description": {
+        "en": "The web server never talks to the database: its leftover database password is removed from its configuration.",
+        "fr": "Le serveur web ne parle jamais à la base : son mot de passe de base résiduel est retiré de sa configuration."
+      },
+      "nodes": ["web-01"],
+      "enabled": false
+    },
+    {
+      "id": "mfa-admins",
+      "type": "mfa",
+      "label": { "en": "MFA for administrators", "fr": "MFA pour les administrateurs" },
+      "description": {
+        "en": "Administrator SSH logins require a second factor. A stolen key or password is no longer enough.",
+        "fr": "Les connexions SSH des administrateurs exigent un second facteur. Une clé ou un mot de passe volé ne suffit plus."
+      },
+      "identities": ["adm-ops"],
+      "enabled": false
+    },
+    {
+      "id": "patch-web",
+      "type": "patch",
+      "label": { "en": "Patch the web server", "fr": "Mettre à jour le serveur web" },
+      "description": {
+        "en": "Updates the vulnerable web component and the operating system of the web server.",
+        "fr": "Met à jour le composant web vulnérable et le système d'exploitation du serveur web."
+      },
+      "nodes": ["web-01"],
+      "enabled": false
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "from-internet",
+      "label": { "en": "Attack from the Internet", "fr": "Attaque depuis Internet" },
+      "description": {
+        "en": "An attacker on the Internet wants the customer data.",
+        "fr": "Un attaquant sur Internet veut les données clients."
+      },
+      "entry": { "node": "internet", "level": "admin" },
+      "target": "customer-data"
+    },
+    {
+      "id": "assumed-breach-web",
+      "label": { "en": "Assumed breach: web server", "fr": "Compromission supposée : serveur web" },
+      "description": {
+        "en": "Assume the web server is already compromised. How far can the attacker go?",
+        "fr": "On suppose le serveur web déjà compromis. Jusqu'où l'attaquant peut-il aller ?"
+      },
+      "entry": { "node": "web-01", "level": "user" },
+      "target": "customer-data"
+    }
+  ]
+}

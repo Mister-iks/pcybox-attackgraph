@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Mister-iks/cyber-attack-surface-lab/schema/lab/0.1.json",
+  "title": "Cyber Attack Surface Lab",
+  "description": "A simulated infrastructure with zones, nodes, flows, identities, assets, security controls and attack scenarios. Format version 0.1.",
+  "type": "object",
+  "required": ["formatVersion", "id", "meta", "zones", "nodes", "edges", "identities", "assets", "controls", "scenarios"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "formatVersion": { "type": "string", "pattern": "^0\\.\\d+\\.\\d+$" },
+    "id": { "$ref": "#/$defs/id" },
+    "meta": {
+      "type": "object",
+      "required": ["title", "authors", "license", "difficulty", "tags"],
+      "properties": {
+        "title": { "$ref": "#/$defs/localized" },
+        "description": { "$ref": "#/$defs/localized" },
+        "authors": { "type": "array", "maxItems": 64, "items": { "type": "string", "maxLength": 200 } },
+        "license": { "type": "string", "maxLength": 100 },
+        "difficulty": { "enum": ["beginner", "intermediate", "advanced", "expert"] },
+        "tags": { "type": "array", "maxItems": 64, "items": { "type": "string", "maxLength": 64 } }
+      }
+    },
+    "zones": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/zone" } },
+    "nodes": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/node" } },
+    "edges": { "type": "array", "maxItems": 5000, "items": { "$ref": "#/$defs/edge" } },
+    "identities": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/identity" } },
+    "assets": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/asset" } },
+    "controls": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/control" } },
+    "scenarios": { "type": "array", "minItems": 1, "maxItems": 1000, "items": { "$ref": "#/$defs/scenario" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$" },
+    "level": { "enum": ["user", "admin"] },
+    "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+    "protocol": { "enum": ["tcp", "udp"] },
+    "weakness": { "enum": ["vulnerable-component", "injection", "unpatched-os"] },
+    "serviceKind": { "enum": ["web", "api", "ssh", "rdp", "database", "smb", "vpn"] },
+    "localized": {
+      "description": "Text keyed by BCP 47 language tag.",
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 50,
+      "propertyNames": { "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$" },
+      "additionalProperties": { "type": "string", "maxLength": 500 }
+    },
+    "zone": {
+      "type": "object",
+      "required": ["id", "type", "label"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["internet", "dmz", "internal", "restricted", "management", "production", "development", "cloud", "third-party", "ot"] },
+        "label": { "$ref": "#/$defs/localized" }
+      }
+    },
+    "service": {
+      "type": "object",
+      "required": ["id", "kind", "port", "protocol", "auth", "runsAs", "weaknesses"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "$ref": "#/$defs/serviceKind" },
+        "port": { "$ref": "#/$defs/port" },
+        "protocol": { "$ref": "#/$defs/protocol" },
+        "auth": { "enum": ["none", "password", "key", "token"] },
+        "runsAs": { "$ref": "#/$defs/level", "description": "Privilege level obtained by exploiting this service." },
+        "weaknesses": { "type": "array", "maxItems": 64, "items": { "$ref": "#/$defs/weakness" } }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": ["id", "type", "label", "zone", "services", "weaknesses", "secrets", "position"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": {
+          "enum": [
+            "internet", "router", "firewall", "workstation", "laptop", "server", "web-server", "api-server",
+            "database", "file-share", "cloud-service", "container", "k8s-cluster", "iot-device", "plc",
+            "domain-controller", "identity-provider", "vpn-gateway", "jump-host", "backup-server", "saas-app"
+          ]
+        },
+        "label": { "$ref": "#/$defs/localized" },
+        "zone": { "$ref": "#/$defs/id" },
+        "services": { "type": "array", "maxItems": 64, "items": { "$ref": "#/$defs/service" } },
+        "weaknesses": { "type": "array", "maxItems": 64, "items": { "$ref": "#/$defs/weakness" } },
+        "secrets": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "required": ["identity", "kind", "requires"],
+            "properties": {
+              "identity": { "$ref": "#/$defs/id" },
+              "kind": { "enum": ["config", "cached-credential"] },
+              "requires": { "$ref": "#/$defs/level" }
+            }
+          }
+        },
+        "position": {
+          "type": "object",
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number", "minimum": -1000000, "maximum": 1000000 },
+            "y": { "type": "number", "minimum": -1000000, "maximum": 1000000 }
+          }
+        }
+      }
+    },
+    "edge": {
+      "description": "A declared, directed network flow: source opens connections to target:port.",
+      "type": "object",
+      "required": ["id", "source", "target", "port", "protocol"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "source": { "$ref": "#/$defs/id" },
+        "target": { "$ref": "#/$defs/id" },
+        "port": { "$ref": "#/$defs/port" },
+        "protocol": { "$ref": "#/$defs/protocol" }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "required": ["id", "type", "label", "privileges"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["user", "developer", "service-account", "admin", "domain-admin", "cloud-admin"] },
+        "label": { "$ref": "#/$defs/localized" },
+        "privileges": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "required": ["node", "level", "via"],
+            "properties": {
+              "node": { "$ref": "#/$defs/id" },
+              "level": { "$ref": "#/$defs/level" },
+              "via": { "type": "array", "maxItems": 7, "items": { "$ref": "#/$defs/serviceKind" } }
+            }
+          }
+        }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "required": ["id", "kind", "label", "node", "requires", "cia"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["customer-data", "payment", "patient-records", "source-code", "domain-control", "backups", "industrial-process"] },
+        "label": { "$ref": "#/$defs/localized" },
+        "node": { "$ref": "#/$defs/id" },
+        "requires": { "$ref": "#/$defs/level" },
+        "cia": {
+          "type": "object",
+          "required": ["c", "i", "a"],
+          "properties": {
+            "c": { "type": "integer", "minimum": 1, "maximum": 4 },
+            "i": { "type": "integer", "minimum": 1, "maximum": 4 },
+            "a": { "type": "integer", "minimum": 1, "maximum": 4 }
+          }
+        }
+      }
+    },
+    "control": {
+      "type": "object",
+      "required": ["id", "type", "label", "enabled"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["segmentation", "secrets-vault", "mfa", "patch"] },
+        "label": { "$ref": "#/$defs/localized" },
+        "description": { "$ref": "#/$defs/localized" },
+        "enabled": { "type": "boolean" },
+        "nodes": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/id" } },
+        "identities": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/id" } }
+      },
+      "allOf": [
+        { "if": { "properties": { "type": { "enum": ["secrets-vault", "patch"] } } }, "then": { "required": ["nodes"] } },
+        { "if": { "properties": { "type": { "const": "mfa" } } }, "then": { "required": ["identities"] } }
+      ]
+    },
+    "scenario": {
+      "type": "object",
+      "required": ["id", "label", "entry"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label": { "$ref": "#/$defs/localized" },
+        "description": { "$ref": "#/$defs/localized" },
+        "entry": {
+          "type": "object",
+          "required": ["node", "level"],
+          "properties": { "node": { "$ref": "#/$defs/id" }, "level": { "$ref": "#/$defs/level" } }
+        },
+        "target": { "$ref": "#/$defs/id", "description": "Asset the attacker is after." }
+      }
+    }
+  }
+}
