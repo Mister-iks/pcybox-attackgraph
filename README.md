@@ -8,7 +8,7 @@
 
 An open source lab that runs entirely in your browser: build a simulated infrastructure, **watch an attack move through it**, and **check whether your defense really works**. Every step comes with the reason it worked, and every control says exactly which precondition it breaks.
 
-[Français](README.fr.md) · [Specification](docs/specification.fr.md) · [How the engine works](docs/engine.md) · [Lab format](docs/lab-format.md) · [Contributing](CONTRIBUTING.md)
+**[Live demo](https://mister-iks.github.io/pcybox-attackgraph/)** · [Français](README.fr.md) · [Specification](docs/specification.fr.md) · [How the engine works](docs/engine.md) · [Lab format](docs/lab-format.md) · [Contributing](CONTRIBUTING.md)
 
 ![An attack from the Internet reaches the customer database in 3 steps](docs/images/attack-reached.png)
 
@@ -28,7 +28,7 @@ Attack surface, lateral movement, segmentation, blast radius, defense in depth: 
 
 ## Try it
 
-The live demo will be published on GitHub Pages when the repository becomes public. Until then, run it locally:
+Open the **[live demo](https://mister-iks.github.io/pcybox-attackgraph/)**: nothing to install, no account. Or run it locally:
 
 ```bash
 git clone https://github.com/Mister-iks/pcybox-attackgraph.git

@@ -8,7 +8,7 @@
 
 Un laboratoire open source qui tourne entièrement dans votre navigateur : construisez une infrastructure fictive, **regardez une attaque la traverser**, et **vérifiez si votre défense fonctionne vraiment**. Chaque étape est accompagnée de la raison de son succès, et chaque contrôle indique précisément quelle précondition il casse.
 
-[English](README.md) · [Cahier des charges](docs/specification.fr.md) · [Fonctionnement du moteur](docs/engine.md) · [Format des labs](docs/lab-format.md) · [Contribuer](CONTRIBUTING.md)
+**[Démo en ligne](https://mister-iks.github.io/pcybox-attackgraph/)** · [English](README.md) · [Cahier des charges](docs/specification.fr.md) · [Fonctionnement du moteur](docs/engine.md) · [Format des labs](docs/lab-format.md) · [Contribuer](CONTRIBUTING.md)
 
 ![Une attaque depuis Internet atteint la base clients en 3 étapes](docs/images/attack-reached.png)
 
@@ -25,6 +25,8 @@ Surface d'attaque, mouvement latéral, segmentation, rayon d'impact, défense en
 **Simulation uniquement.** Le lab ne scanne, ne contacte et n'attaque jamais un système réel. Les techniques sont décrites au niveau conceptuel, reliées à [MITRE ATT&CK](https://attack.mitre.org/), sans aucune procédure d'exploitation.
 
 ## Essayer
+
+Ouvrez la **[démo en ligne](https://mister-iks.github.io/pcybox-attackgraph/)** : rien à installer, sans compte. Ou lancez-la en local :
 
 ```bash
 git clone https://github.com/Mister-iks/pcybox-attackgraph.git
