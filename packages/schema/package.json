@@ -1,7 +1,7 @@
 {
-  "name": "@cslab/schema",
+  "name": "@pcybox/attackgraph-schema",
   "version": "0.1.0",
-  "description": "JSON Schema of the .cslab.json lab format.",
+  "description": "JSON Schema of the .attackgraph.json lab format.",
   "license": "Apache-2.0",
   "private": true,
   "type": "module",

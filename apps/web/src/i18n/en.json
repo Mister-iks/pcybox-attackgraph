@@ -1,5 +1,5 @@
 {
-  "app.title": "Cyber Attack Surface Lab",
+  "app.title": "PCYBOX AttackGraph",
   "app.tagline": "Build. Attack. Defend. Understand.",
   "app.skip": "Skip to the attack map",
   "app.simulationOnly": "Simulation only: no real system is scanned or attacked, and nothing leaves your browser.",

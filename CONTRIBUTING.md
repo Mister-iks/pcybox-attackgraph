@@ -12,7 +12,7 @@ The value of the lab depends on the model being right. If you work in offensive 
 
 ## 3. Write labs and missions
 
-Labs live in `content/templates/` as `.cslab.json` files ([format](docs/lab-format.md)), under CC BY 4.0. A good lab:
+Labs live in `content/templates/` as `.attackgraph.json` files ([format](docs/lab-format.md)), under CC BY 4.0. A good lab:
 
 - teaches one or two concepts, stated in its description;
 - uses generic, neutral names (no brands, countries or currencies);

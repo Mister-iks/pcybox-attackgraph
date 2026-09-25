@@ -1,4 +1,4 @@
-import type { Localized } from '@cslab/engine';
+import type { Localized } from '@pcybox/attackgraph-engine';
 import en from './en.json';
 import fr from './fr.json';
 

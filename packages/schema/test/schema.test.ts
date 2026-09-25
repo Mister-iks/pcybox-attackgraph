@@ -10,7 +10,7 @@ const validate = ajv.compile(schema);
 
 const templatesDir = join(import.meta.dirname, '../../../content/templates');
 const templates = readdirSync(templatesDir)
-  .filter((f) => f.endsWith('.cslab.json'))
+  .filter((f) => f.endsWith('.attackgraph.json'))
   .map((f) => [f, JSON.parse(readFileSync(join(templatesDir, f), 'utf8'))] as const);
 
 describe('lab JSON Schema', () => {

@@ -1,5 +1,5 @@
 /**
- * Lab format (.cslab.json) and simulation types.
+ * Lab format (.attackgraph.json) and simulation types.
  * The JSON Schema in packages/schema/lab.schema.json describes the same shape.
  */
 

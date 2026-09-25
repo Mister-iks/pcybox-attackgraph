@@ -1,4 +1,4 @@
-import { withControl, type Lab, type SimResult } from '@cslab/engine';
+import { withControl, type Lab, type SimResult } from '@pcybox/attackgraph-engine';
 import { create } from 'zustand';
 import { detectLocale, type Locale } from './i18n/locales.ts';
 import { DEFAULT_LAB } from './lab/template.ts';
@@ -75,7 +75,7 @@ const storage = {
 };
 
 function initialTheme(): Theme {
-  const stored = storage.get('cslab.theme');
+  const stored = storage.get('attackgraph.theme');
   if (stored === 'dark' || stored === 'light') return stored;
   return typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 }
@@ -93,7 +93,7 @@ export const useApp = create<AppState>((set, get) => ({
   speed: 1,
   selectedNode: null,
   tab: 'timeline',
-  locale: detectLocale(storage.get('cslab.locale')),
+  locale: detectLocale(storage.get('attackgraph.locale')),
   theme: initialTheme(),
   toast: null,
 
@@ -178,12 +178,12 @@ export const useApp = create<AppState>((set, get) => ({
   },
 
   setLocale(locale) {
-    storage.set('cslab.locale', locale);
+    storage.set('attackgraph.locale', locale);
     set({ locale });
   },
 
   setTheme(theme) {
-    storage.set('cslab.theme', theme);
+    storage.set('attackgraph.theme', theme);
     set({ theme });
   },
 

@@ -1,7 +1,7 @@
 {
-  "name": "@cslab/engine",
+  "name": "@pcybox/attackgraph-engine",
   "version": "0.1.0",
-  "description": "Deterministic, explainable attack path simulation engine for Cyber Attack Surface Lab.",
+  "description": "Deterministic, explainable attack path simulation engine for PCYBOX AttackGraph.",
   "license": "Apache-2.0",
   "private": true,
   "type": "module",

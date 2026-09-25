@@ -1,4 +1,4 @@
-import type { Localized, Message, SimEvent } from '@cslab/engine';
+import type { Localized, Message, SimEvent } from '@pcybox/attackgraph-engine';
 import { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useApp } from '../store.ts';

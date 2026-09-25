@@ -1,4 +1,4 @@
-import type { Lab, SimResult } from '@cslab/engine';
+import type { Lab, SimResult } from '@pcybox/attackgraph-engine';
 
 export interface SimRequest {
   id: number;

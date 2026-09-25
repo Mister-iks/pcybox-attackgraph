@@ -48,12 +48,7 @@ export function Header() {
   return (
     <header className="app-header">
       <div className="brand">
-        <svg className="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
-          <circle cx="18" cy="20" r="6" />
-          <circle cx="46" cy="20" r="6" />
-          <circle cx="32" cy="46" r="7" className="brand-hot" />
-          <path d="M18 20 L46 20 M18 20 L32 46 M46 20 L32 46" />
-        </svg>
+        <img className="brand-mark" src={`${import.meta.env.BASE_URL}logo-mark.png`} alt="" width={36} height={36} />
         <div className="brand-text">
           <h1>{f.t('app.title')}</h1>
           <p>

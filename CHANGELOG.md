@@ -7,7 +7,7 @@ All notable changes are documented here. The project follows [Semantic Versionin
 ### Added
 
 - Simulation engine: capabilities, 8 techniques mapped to MITRE ATT&CK, 4 controls with precise effects, breadth-first saturation, explanations for every step.
-- Strict validator for untrusted labs and JSON Schema of the `.cslab.json` format (0.1.0).
+- Strict validator for untrusted labs and JSON Schema of the `.attackgraph.json` format (0.1.0).
 - Web Application template with two scenarios.
 - Web app: animated attack map, timeline with replay speeds, Why? panel with one-click what if, before/after comparison, text view.
 - Sharing by link (lab in the URL fragment), export and import of lab files.

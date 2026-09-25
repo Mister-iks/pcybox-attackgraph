@@ -1,4 +1,4 @@
-import type { NodeType } from '@cslab/engine';
+import type { NodeType } from '@pcybox/attackgraph-engine';
 import {
   AppWindow,
   Archive,

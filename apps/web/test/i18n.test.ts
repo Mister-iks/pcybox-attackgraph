@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { MESSAGE_KEYS } from '@cslab/engine';
+import { MESSAGE_KEYS } from '@pcybox/attackgraph-engine';
 import { createIntl } from 'react-intl';
 import { describe, expect, it } from 'vitest';
 import { LOCALES } from '../src/i18n/locales.ts';

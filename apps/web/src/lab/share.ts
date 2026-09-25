@@ -1,4 +1,4 @@
-import { validateLab, type Lab } from '@cslab/engine';
+import { validateLab, type Lab } from '@pcybox/attackgraph-engine';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 
 /** Links stay short enough for chat apps and QR codes. Bigger labs are shared as files. */

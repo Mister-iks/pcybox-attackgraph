@@ -2,7 +2,7 @@
 
 ## Scope
 
-This policy covers vulnerabilities in Cyber Attack Surface Lab itself: the web application, the engine, the lab format and the build and release pipeline. Examples: a crafted lab file or share link that runs script in the page, breaks out of validation, or freezes the browser; a supply chain issue in our dependencies or workflows.
+This policy covers vulnerabilities in PCYBOX AttackGraph itself: the web application, the engine, the lab format and the build and release pipeline. Examples: a crafted lab file or share link that runs script in the page, breaks out of validation, or freezes the browser; a supply chain issue in our dependencies or workflows.
 
 The attack scenarios *inside* the labs are fictional and are not vulnerabilities.
 

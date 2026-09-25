@@ -1,4 +1,4 @@
-import type { Lab, Level, SimEvent, SimResult } from '@cslab/engine';
+import type { Lab, Level, SimEvent, SimResult } from '@pcybox/attackgraph-engine';
 
 export interface AttackArrow {
   id: string;

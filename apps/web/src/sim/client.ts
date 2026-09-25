@@ -1,4 +1,4 @@
-import { simulate, withoutControls, type Lab } from '@cslab/engine';
+import { simulate, withoutControls, type Lab } from '@pcybox/attackgraph-engine';
 import type { SimOutput, SimResponse } from './protocol.ts';
 
 let worker: Worker | null | undefined;

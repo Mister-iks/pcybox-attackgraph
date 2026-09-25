@@ -1,4 +1,4 @@
-import type { Block, SimResult } from '@cslab/engine';
+import type { Block, SimResult } from '@pcybox/attackgraph-engine';
 import { ExternalLink, ShieldCheck } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useFormat, type Formatter } from '../i18n/format.ts';

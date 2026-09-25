@@ -8,7 +8,7 @@
       "en": "A public web server, an internal API and a customer database. The internal network is flat and the web server keeps secrets it does not need.",
       "fr": "Un serveur web public, une API interne et une base clients. Le réseau interne est plat et le serveur web conserve des secrets dont il n'a pas besoin."
     },
-    "authors": ["Cyber Attack Surface Lab contributors"],
+    "authors": ["PCYBOX AttackGraph contributors"],
     "license": "CC-BY-4.0",
     "difficulty": "beginner",
     "tags": ["segmentation", "credential-access", "defense-in-depth"]

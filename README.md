@@ -1,4 +1,8 @@
-# Cyber Attack Surface Lab
+<p align="center">
+  <img src="docs/images/logo.png" width="240" alt="PCYBOX AttackGraph logo" />
+</p>
+
+# PCYBOX AttackGraph
 
 > **Build. Attack. Defend. Understand.**
 
@@ -12,7 +16,7 @@ An open source lab that runs entirely in your browser: build a simulated infrast
 
 ## Why this project
 
-Attack surface, lateral movement, segmentation, blast radius, defense in depth: these ideas are hard to grasp from static diagrams. Cyber Attack Surface Lab turns them into something you can see and manipulate:
+Attack surface, lateral movement, segmentation, blast radius, defense in depth: these ideas are hard to grasp from static diagrams. PCYBOX AttackGraph turns them into something you can see and manipulate:
 
 - **Visible**: the attack moves on the map, step by step, with replay controls.
 - **Explainable**: the **Why?** panel lists the preconditions that held, the control that stopped a step, and the controls that *could* have stopped it, with one click to try them.
@@ -27,8 +31,8 @@ Attack surface, lateral movement, segmentation, blast radius, defense in depth: 
 The live demo will be published on GitHub Pages when the repository becomes public. Until then, run it locally:
 
 ```bash
-git clone https://github.com/Mister-iks/cyber-attack-surface-lab.git
-cd cyber-attack-surface-lab
+git clone https://github.com/Mister-iks/pcybox-attackgraph.git
+cd pcybox-attackgraph
 pnpm install
 pnpm dev
 ```
@@ -42,7 +46,7 @@ Keyboard: `Space` plays or pauses, arrow keys step through the attack, `Home` go
 - The **Web Application** template: a public web server, an internal API, a customer database and an admin jump host, with two scenarios (attack from the Internet, assumed breach of the web server).
 - A deterministic engine with 8 techniques and 4 controls (segmentation, secrets removal, MFA, patch).
 - Animated map, timeline with x1/x2/x4 replay, **Why?** panel, **Before / after** comparison, **Text view**.
-- Sharing by link (the whole lab travels in the URL fragment, nothing is stored on a server), export and import of `.cslab.json` files.
+- Sharing by link (the whole lab travels in the URL fragment, nothing is stored on a server), export and import of `.attackgraph.json` files.
 - English and French, light and dark themes, reduced motion support.
 
 See the [roadmap](#roadmap) for what comes next.
@@ -50,7 +54,7 @@ See the [roadmap](#roadmap) for what comes next.
 ## How it works
 
 ```text
-lab (.cslab.json) ──▶ validation ──▶ engine (web worker) ──▶ story of events ──▶ map, timeline, Why?
+lab (.attackgraph.json) ──▶ validation ──▶ engine (web worker) ──▶ story of events ──▶ map, timeline, Why?
 ```
 
 The engine saturates the attacker's capabilities round by round (footholds, credentials, data access). Each technique has preconditions and effects; each control breaks a precise precondition. Because rounds are breadth first, the story replayed for a reached target is one of its shortest derivations. Details in [docs/engine.md](docs/engine.md).
@@ -60,7 +64,7 @@ The engine saturates the attacker's capabilities round by round (footholds, cred
 ```text
 apps/web/           web application (React, React Flow, Vite)
 packages/engine/    simulation engine: pure TypeScript, no DOM, fully tested
-packages/schema/    JSON Schema of the .cslab.json lab format
+packages/schema/    JSON Schema of the .attackgraph.json lab format
 content/templates/  ready-to-use labs (CC BY 4.0)
 docs/               specification, engine and format documentation
 ```

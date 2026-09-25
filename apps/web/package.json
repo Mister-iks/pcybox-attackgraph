@@ -1,5 +1,5 @@
 {
-  "name": "@cslab/web",
+  "name": "@pcybox/attackgraph-web",
   "version": "0.1.0",
   "private": true,
   "license": "Apache-2.0",
@@ -13,7 +13,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@cslab/engine": "workspace:*",
+    "@pcybox/attackgraph-engine": "workspace:*",
     "@xyflow/react": "^12.12.0",
     "lucide-react": "^1.48.0",
     "lz-string": "^1.5.0",

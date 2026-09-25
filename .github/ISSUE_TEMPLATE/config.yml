@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Report a security vulnerability
-    url: https://github.com/Mister-iks/cyber-attack-surface-lab/security/advisories/new
+    url: https://github.com/Mister-iks/pcybox-attackgraph/security/advisories/new
     about: Please report vulnerabilities privately, not in a public issue.

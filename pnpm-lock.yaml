@@ -20,7 +20,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@cslab/engine':
+      '@pcybox/attackgraph-engine':
         specifier: workspace:*
         version: link:../../packages/engine
       '@xyflow/react':

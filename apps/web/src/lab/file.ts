@@ -1,4 +1,4 @@
-import { validateLab, type Lab } from '@cslab/engine';
+import { validateLab, type Lab } from '@pcybox/attackgraph-engine';
 
 export const MAX_FILE_BYTES = 1_000_000;
 
@@ -7,7 +7,7 @@ export function downloadLab(lab: Lab): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${lab.id}.cslab.json`;
+  a.download = `${lab.id}.attackgraph.json`;
   document.body.append(a);
   a.click();
   a.remove();

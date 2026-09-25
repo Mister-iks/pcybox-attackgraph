@@ -19,7 +19,7 @@ const CSP = [
 
 function contentSecurityPolicy(): Plugin {
   return {
-    name: 'cslab-csp',
+    name: 'attackgraph-csp',
     apply: 'build',
     transformIndexHtml: (html) =>
       html.replace('<head>', `<head>\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`),

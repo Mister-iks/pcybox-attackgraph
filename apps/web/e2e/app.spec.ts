@@ -18,7 +18,7 @@ test('the attack reaches the database, then segmentation contains it', async ({ 
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Cyber Attack Surface Lab' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'PCYBOX AttackGraph' })).toBeVisible();
   await snap(page, '0-start');
 
   await runAndWait(page, /Target reached/i);

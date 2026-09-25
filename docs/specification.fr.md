@@ -1,10 +1,10 @@
-# Cyber Attack Surface Lab
+# PCYBOX AttackGraph
 
 ## Cahier des charges : v2.0
 
 | | |
 |---|---|
-| **Nom** | Cyber Attack Surface Lab |
+| **Nom** | PCYBOX AttackGraph |
 | **Tagline** | *Build. Attack. Defend. Understand.* |
 | **Type** | Laboratoire open source de simulation de chemins d'attaque, dans le navigateur |
 | **Plateforme** | Web (PWA, fonctionne hors ligne), auto-hébergeable, intégrable (iframe, LMS) |
@@ -34,7 +34,7 @@
 
 ## 1. Vision
 
-Cyber Attack Surface Lab permet de **construire une infrastructure fictive, voir comment une attaque la traverse, et vérifier si une défense fonctionne vraiment**, directement dans un navigateur, sans installation, sans compte, dans n'importe quelle langue.
+PCYBOX AttackGraph permet de **construire une infrastructure fictive, voir comment une attaque la traverse, et vérifier si une défense fonctionne vraiment**, directement dans un navigateur, sans installation, sans compte, dans n'importe quelle langue.
 
 > **« Si cet élément est compromis, jusqu'où l'attaquant peut-il aller, pourquoi, et qu'est-ce qui l'arrêterait ? »**
 
@@ -45,7 +45,7 @@ L'objectif à long terme est de devenir **la référence mondiale ouverte pour e
 - un **simulateur pédagogique** fondé sur un modèle explicite et vérifiable ;
 - un **support de cours** : formateurs, écoles, bootcamps, MOOC, programmes de sensibilisation ;
 - un **bac à sable d'architecture** pour réfléchir avant de construire (développeurs, DevSecOps) ;
-- un **format ouvert** (`.cslab.json`) pour décrire et échanger des scénarios.
+- un **format ouvert** (`.attackgraph.json`) pour décrire et échanger des scénarios.
 
 ### 1.2 Ce que le projet n'est pas
 
@@ -173,14 +173,14 @@ Apprenant        ─▶ Lien reçu ─▶ Mission ─▶ Choisir des contrôles 
 
 ### 6.1 Format de fichier
 
-- Extension : `.cslab.json` ; type MIME : `application/vnd.cslab+json`.
+- Extension : `.attackgraph.json` ; type MIME : `application/vnd.pcybox.attackgraph+json`.
 - Décrit par un **JSON Schema publié et versionné** (`schema/lab.schema.json`, SemVer).
 - Chaque version du moteur sait **migrer** les versions antérieures du format.
 - Les identifiants sont neutres (`web-01`) ; tous les textes affichés passent par des **clés de traduction** ou des champs `label` localisables.
 
 ```json
 {
-  "$schema": "https://cyberlab.dev/schema/lab/1.0.json",
+  "$schema": "https://github.com/Mister-iks/pcybox-attackgraph/schema/lab/1.0.json",
   "formatVersion": "1.0.0",
   "id": "tpl-web-application",
   "meta": {
@@ -541,7 +541,7 @@ Cible : **WCAG 2.2 niveau AA**.
 | Mode | Fonctionnement | Version |
 |---|---|---|
 | **Lien** | Lab compressé dans le fragment d'URL (`#lab=…`), rien n'est envoyé à un serveur | v0.1 |
-| **Fichier** | Export / import `.cslab.json` | v0.1 |
+| **Fichier** | Export / import `.attackgraph.json` | v0.1 |
 | **Embed** | `<iframe src="…/embed#lab=…&mode=readonly&autoplay=1">` pour blogs, docs et slides | v0.3 |
 | **Galerie** | Labs publiés via pull request, servis statiquement | v0.5 |
 | **LMS** | **LTI 1.3** (Moodle, Canvas, Blackboard…) et export **SCORM/xAPI** des résultats de missions | v1.x |
@@ -571,17 +571,17 @@ Si le lab est trop gros pour une URL (> ~8 Ko compressés), l'outil propose l'ex
 ### 12.2 Organisation du dépôt
 
 ```text
-cyber-attack-surface-lab/
+pcybox-attackgraph/
 ├── apps/
 │   ├── web/                  # application principale (PWA)
 │   └── docs/                 # site de documentation (multilingue)
 ├── packages/
-│   ├── schema/               # JSON Schema du format .cslab + migrations
+│   ├── schema/               # JSON Schema du format .attackgraph + migrations
 │   ├── engine/               # saturation, chemins, blast radius, what-if
 │   ├── catalog/              # techniques, faiblesses, contrôles (données)
 │   ├── i18n/                 # messages ICU de l'interface et du moteur
 │   ├── ui/                   # composants
-│   └── cli/                  # `cslab validate|simulate|diff lab.json`
+│   └── cli/                  # `attackgraph validate|simulate|diff lab.json`
 ├── content/
 │   ├── templates/
 │   ├── missions/
@@ -595,9 +595,9 @@ cyber-attack-surface-lab/
 ### 12.3 CLI et usage « as code »
 
 ```bash
-cslab validate lab.cslab.json
-cslab simulate lab.cslab.json --from internet --target customer-data --format md
-cslab diff before.cslab.json after.cslab.json
+attackgraph validate lab.attackgraph.json
+attackgraph simulate lab.attackgraph.json --from internet --target customer-data --format md
+attackgraph diff before.attackgraph.json after.attackgraph.json
 ```
 
 Cette CLI sert les tests, la CI des contenus, et les enseignants qui génèrent des exercices. Plus tard, elle permettra d'importer des architectures depuis `docker-compose` ou Terraform (en lecture seule, hors ligne).
@@ -689,7 +689,7 @@ Les durées supposent 1 à 2 contributeurs réguliers. Elles sont indicatives ; 
 
 ### v1.0 : Stable
 
-- Format `.cslab` 1.0 figé (compatibilité garantie par migrations).
+- Format `.attackgraph` 1.0 figé (compatibilité garantie par migrations).
 - 8 templates, 20+ missions, 9 langues dont arabe et chinois.
 - Suggestions de remédiation (coupes minimales).
 - Documentation complète multilingue, archive hors ligne pour les écoles.
@@ -730,7 +730,7 @@ Mesurés sans collecte de données personnelles (compteurs agrégés, signaux pu
 |---|---|
 | 6 mois après v0.1 | 1 000 étoiles GitHub · 20 contributeurs · 4 langues complètes · 5 formateurs utilisant l'outil en cours |
 | 12 mois | 30 labs communautaires · 9 langues · adoption documentée dans 10 établissements sur au moins 3 continents |
-| 24 mois | Intégration dans un programme de formation reconnu · format `.cslab` utilisé par un projet tiers |
+| 24 mois | Intégration dans un programme de formation reconnu · format `.attackgraph` utilisé par un projet tiers |
 
 ---
 
@@ -784,4 +784,4 @@ Mesurés sans collecte de données personnelles (compteurs agrégés, signaux pu
 >
 > **Dans ma langue, sur mon appareil, où que je sois.**
 
-C'est le cœur de **Cyber Attack Surface Lab**.
+C'est le cœur de **PCYBOX AttackGraph**.

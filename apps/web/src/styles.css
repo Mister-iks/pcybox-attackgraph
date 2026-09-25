@@ -218,17 +218,10 @@ a {
 }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   flex: none;
-  fill: var(--accent);
-  stroke: var(--accent);
-  stroke-width: 3;
-}
-
-.brand-mark .brand-hot {
-  fill: var(--danger);
-  stroke: none;
+  border-radius: 8px;
 }
 
 .brand-text h1 {
@@ -329,10 +322,10 @@ a {
 }
 
 .spin {
-  animation: cslab-spin 1s linear infinite;
+  animation: attackgraph-spin 1s linear infinite;
 }
 
-@keyframes cslab-spin {
+@keyframes attackgraph-spin {
   to {
     transform: rotate(360deg);
   }
@@ -565,14 +558,14 @@ a {
 }
 
 .is-current {
-  animation: cslab-pulse 1.2s ease-out 2;
+  animation: attackgraph-pulse 1.2s ease-out 2;
 }
 
 .current-blocked {
-  animation-name: cslab-pulse-shield;
+  animation-name: attackgraph-pulse-shield;
 }
 
-@keyframes cslab-pulse {
+@keyframes attackgraph-pulse {
   0% {
     box-shadow: 0 0 0 0 var(--danger);
   }
@@ -581,7 +574,7 @@ a {
   }
 }
 
-@keyframes cslab-pulse-shield {
+@keyframes attackgraph-pulse-shield {
   0% {
     box-shadow: 0 0 0 0 var(--shield);
   }
@@ -622,7 +615,7 @@ a {
 
 .attack-edge.is-current {
   stroke-dasharray: 10 8;
-  animation: cslab-dash 0.8s linear infinite;
+  animation: attackgraph-dash 0.8s linear infinite;
   filter: drop-shadow(0 0 6px var(--danger));
 }
 
@@ -630,7 +623,7 @@ a {
   filter: drop-shadow(0 0 6px var(--shield));
 }
 
-@keyframes cslab-dash {
+@keyframes attackgraph-dash {
   to {
     stroke-dashoffset: -18;
   }

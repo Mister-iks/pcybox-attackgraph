@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import template from '../../../content/templates/web-application.cslab.json' with { type: 'json' };
+import template from '../../../content/templates/web-application.attackgraph.json' with { type: 'json' };
 import { simulate, validateLab, withControl, withoutControls, type Lab, type SimResult } from '../src/index.ts';
 
 function loadTemplate(): Lab {

@@ -1,4 +1,4 @@
-import type { LabNode } from '@cslab/engine';
+import type { LabNode } from '@pcybox/attackgraph-engine';
 import {
   applyNodeChanges,
   Background,

@@ -1,6 +1,6 @@
-# Lab format (`.cslab.json`)
+# Lab format (`.attackgraph.json`)
 
-A lab is a JSON file described by [`packages/schema/lab.schema.json`](../packages/schema/lab.schema.json). Add `"$schema"` at the top of a lab to get completion and validation in most editors. The reference example is [`content/templates/web-application.cslab.json`](../content/templates/web-application.cslab.json).
+A lab is a JSON file described by [`packages/schema/lab.schema.json`](../packages/schema/lab.schema.json). Add `"$schema"` at the top of a lab to get completion and validation in most editors. The reference example is [`content/templates/web-application.attackgraph.json`](../content/templates/web-application.attackgraph.json).
 
 Format version: `0.1.0`. Until 1.0, minor versions may change the format; the app will migrate older labs when that happens.
 

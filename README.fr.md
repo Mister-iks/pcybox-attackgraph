@@ -1,4 +1,8 @@
-# Cyber Attack Surface Lab
+<p align="center">
+  <img src="docs/images/logo.png" width="240" alt="Logo PCYBOX AttackGraph" />
+</p>
+
+# PCYBOX AttackGraph
 
 > **Construire. Attaquer. Défendre. Comprendre.**
 
@@ -10,7 +14,7 @@ Un laboratoire open source qui tourne entièrement dans votre navigateur : const
 
 ## Pourquoi ce projet
 
-Surface d'attaque, mouvement latéral, segmentation, rayon d'impact, défense en profondeur : ces notions sont difficiles à saisir avec des schémas statiques. Cyber Attack Surface Lab les rend visibles et manipulables :
+Surface d'attaque, mouvement latéral, segmentation, rayon d'impact, défense en profondeur : ces notions sont difficiles à saisir avec des schémas statiques. PCYBOX AttackGraph les rend visibles et manipulables :
 
 - **Visible** : l'attaque se déplace sur la carte, étape par étape, avec des commandes de relecture.
 - **Explicable** : le panneau **Pourquoi ?** liste les préconditions remplies, le contrôle qui a stoppé une étape et ceux qui *auraient pu* la stopper, avec un bouton pour les essayer.
@@ -23,8 +27,8 @@ Surface d'attaque, mouvement latéral, segmentation, rayon d'impact, défense en
 ## Essayer
 
 ```bash
-git clone https://github.com/Mister-iks/cyber-attack-surface-lab.git
-cd cyber-attack-surface-lab
+git clone https://github.com/Mister-iks/pcybox-attackgraph.git
+cd pcybox-attackgraph
 pnpm install
 pnpm dev
 ```

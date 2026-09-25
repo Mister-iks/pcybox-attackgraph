@@ -13,7 +13,7 @@ body:
     id: lab
     attributes:
       label: Lab or share link
-      description: If the problem depends on a lab, attach the exported .cslab.json file or paste the share link.
+      description: If the problem depends on a lab, attach the exported .attackgraph.json file or paste the share link.
   - type: input
     id: browser
     attributes:

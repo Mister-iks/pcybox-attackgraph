@@ -1,5 +1,5 @@
 /// <reference lib="webworker" />
-import { simulate, withoutControls } from '@cslab/engine';
+import { simulate, withoutControls } from '@pcybox/attackgraph-engine';
 import type { SimRequest, SimResponse } from './protocol.ts';
 
 // The engine runs off the main thread so large labs never freeze the interface.

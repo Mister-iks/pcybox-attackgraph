@@ -1,5 +1,5 @@
-import { validateLab, type Lab } from '@cslab/engine';
-import raw from '../../../../content/templates/web-application.cslab.json';
+import { validateLab, type Lab } from '@pcybox/attackgraph-engine';
+import raw from '../../../../content/templates/web-application.attackgraph.json';
 
 function load(data: unknown): Lab {
   const result = validateLab(data);

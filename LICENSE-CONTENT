@@ -1,4 +1,4 @@
-Educational content of Cyber Attack Surface Lab
+Educational content of PCYBOX AttackGraph
 ===============================================
 
 Everything under the content/ directory (labs, templates, missions and their
@@ -13,7 +13,7 @@ Full legal code: https://creativecommons.org/licenses/by/4.0/legalcode
 Summary:         https://creativecommons.org/licenses/by/4.0/
 
 Suggested attribution:
-  "Cyber Attack Surface Lab contributors, CC BY 4.0,
-   https://github.com/Mister-iks/cyber-attack-surface-lab"
+  "PCYBOX AttackGraph contributors, CC BY 4.0,
+   https://github.com/Mister-iks/pcybox-attackgraph"
 
 Source code is licensed separately under the Apache License 2.0 (see LICENSE).

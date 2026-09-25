@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Mister-iks/cyber-attack-surface-lab/schema/lab/0.1.json",
-  "title": "Cyber Attack Surface Lab",
+  "$id": "https://github.com/Mister-iks/pcybox-attackgraph/schema/lab/0.1.json",
+  "title": "PCYBOX AttackGraph",
   "description": "A simulated infrastructure with zones, nodes, flows, identities, assets, security controls and attack scenarios. Format version 0.1.",
   "type": "object",
   "required": ["formatVersion", "id", "meta", "zones", "nodes", "edges", "identities", "assets", "controls", "scenarios"],

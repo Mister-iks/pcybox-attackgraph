@@ -1,5 +1,5 @@
 {
-  "name": "cyber-attack-surface-lab",
+  "name": "pcybox-attackgraph",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.0.8",
@@ -7,13 +7,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "pnpm --filter @cslab/web dev",
-    "build": "pnpm --filter @cslab/web build",
+    "dev": "pnpm --filter @pcybox/attackgraph-web dev",
+    "build": "pnpm --filter @pcybox/attackgraph-web build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "check:text": "node scripts/check-text.mjs",
     "check:bundle": "node scripts/check-bundle.mjs",
-    "e2e": "pnpm --filter @cslab/web e2e",
+    "e2e": "pnpm --filter @pcybox/attackgraph-web e2e",
     "verify": "pnpm check:text && pnpm typecheck && pnpm test && pnpm build && pnpm check:bundle"
   },
   "devDependencies": {

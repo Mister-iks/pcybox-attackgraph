@@ -156,7 +156,7 @@ export function Sidebar() {
         <p>{f.t('app.simulationOnly')}</p>
         <p>{f.t('app.attackTrademark')}</p>
         <p>
-          <a href="https://github.com/Mister-iks/cyber-attack-surface-lab" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/Mister-iks/pcybox-attackgraph" target="_blank" rel="noopener noreferrer">
             {f.t('app.source')}
           </a>
         </p>

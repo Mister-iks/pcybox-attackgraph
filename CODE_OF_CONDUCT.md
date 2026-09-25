@@ -1,6 +1,6 @@
 # Code of conduct
 
-Cyber Attack Surface Lab is built by and for people from many countries, languages and backgrounds, from first year students to seasoned practitioners. We want everyone to feel welcome to learn, ask and contribute.
+PCYBOX AttackGraph is built by and for people from many countries, languages and backgrounds, from first year students to seasoned practitioners. We want everyone to feel welcome to learn, ask and contribute.
 
 This project adopts the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). In short:
 
