@@ -177,6 +177,10 @@ function secretTechnique(id: string, kind: 'config' | 'cached-credential', attac
             ok(msg('evidence.foothold', { node: node.id, level: f.level })),
             ok(msg('evidence.secret', { node: node.id, identity: secret.identity, kind })),
           ];
+          if (kind === 'cached-credential') {
+            // A credential is cached because the identity logs on to the node.
+            checks[1] = cachedCredentialCheck(ctx, secret.identity, node.id);
+          }
           if (kind === 'config') {
             const vaults = partition(ctx.controlsOf('secrets-vault').filter((c) => c.nodes.includes(node.id)));
             const block = (c: Control): Block => ({
@@ -242,7 +246,7 @@ const remoteLogin: Technique = {
               premises: [`credential:${identityId}`, src.key],
               gains: [{ type: 'foothold', node: node.id, level: priv.level }],
               checks: [
-                ok(msg('evidence.privilege', { identity: identityId, node: node.id, level: priv.level, service: service.id })),
+                privilegeCheck(ctx, identityId, node.id, priv.level),
                 reach(ctx, src.node, node.id, service.port),
                 mfa,
               ],
@@ -254,6 +258,40 @@ const remoteLogin: Technique = {
     }
   },
 };
+
+function revocations(ctx: LabContext, identity: string, node: string) {
+  return partition(
+    ctx.controlsOf('least-privilege').filter((c) => c.revoke.some((r) => r.identity === identity && r.node === node)),
+  );
+}
+
+/** The identity may log on to the node, unless least privilege removed that right. */
+function privilegeCheck(ctx: LabContext, identity: string, node: string, level: Level): Check {
+  const { active, inactive } = revocations(ctx, identity, node);
+  const block = (c: Control): Block => ({ control: c.id, message: msg('block.leastPrivilege', { identity, node }) });
+  if (active.length > 0) return blocked(active.map(block));
+  return ok(msg('evidence.privilege', { identity, node, level }), inactive.map(block));
+}
+
+/** A cached credential exists while the identity logs on to the node, and can be read unless it is protected. */
+function cachedCredentialCheck(ctx: LabContext, identity: string, node: string): Check {
+  const revoked = revocations(ctx, identity, node);
+  const protectedBy = partition(ctx.controlsOf('credential-protection').filter((c) => c.nodes.includes(node)));
+  const revokeBlock = (c: Control): Block => ({
+    control: c.id,
+    message: msg('block.leastPrivilegeCache', { identity, node }),
+  });
+  const protectBlock = (c: Control): Block => ({
+    control: c.id,
+    message: msg('block.credentialProtection', { identity, node }),
+  });
+  const active = [...revoked.active.map(revokeBlock), ...protectedBy.active.map(protectBlock)];
+  if (active.length > 0) return blocked(active);
+  return ok(msg('evidence.secret', { node, identity, kind: 'cached-credential' }), [
+    ...revoked.inactive.map(revokeBlock),
+    ...protectedBy.inactive.map(protectBlock),
+  ]);
+}
 
 function mfaCheck(ctx: LabContext, identity: string, node: string, kind: ServiceKind): Check {
   if (!MFA_KINDS.has(kind)) return ok(msg('evidence.mfaNotApplicable', { identity, kind }));
@@ -289,7 +327,7 @@ const databaseAccess: Technique = {
               premises: [`credential:${identityId}`, src.key],
               gains: assets.map((a) => ({ type: 'data', asset: a.id }) as const),
               checks: [
-                ok(msg('evidence.privilege', { identity: identityId, node: node.id, level: priv.level, service: service.id })),
+                privilegeCheck(ctx, identityId, node.id, priv.level),
                 reach(ctx, src.node, node.id, service.port),
                 mfaCheck(ctx, identityId, node.id, service.kind),
               ],
@@ -365,4 +403,7 @@ export const MESSAGE_KEYS = [
   'block.patch',
   'block.vault',
   'block.mfa',
+  'block.leastPrivilege',
+  'block.leastPrivilegeCache',
+  'block.credentialProtection',
 ] as const;

@@ -80,7 +80,14 @@ export const ASSET_KINDS = [
 ] as const;
 export type AssetKind = (typeof ASSET_KINDS)[number];
 
-export const CONTROL_TYPES = ['segmentation', 'secrets-vault', 'mfa', 'patch'] as const;
+export const CONTROL_TYPES = [
+  'segmentation',
+  'secrets-vault',
+  'mfa',
+  'patch',
+  'least-privilege',
+  'credential-protection',
+] as const;
 export type ControlType = (typeof CONTROL_TYPES)[number];
 
 export const DIFFICULTIES = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
@@ -167,7 +174,11 @@ export type Control =
   | (ControlBase & { type: 'segmentation' })
   | (ControlBase & { type: 'secrets-vault'; nodes: string[] })
   | (ControlBase & { type: 'mfa'; identities: string[] })
-  | (ControlBase & { type: 'patch'; nodes: string[] });
+  | (ControlBase & { type: 'patch'; nodes: string[] })
+  /** Removes the listed rights: the identity can no longer log on to the node, so it leaves no cached credential there. */
+  | (ControlBase & { type: 'least-privilege'; revoke: { identity: string; node: string }[] })
+  /** Protects credentials cached in memory on the listed nodes from being extracted. */
+  | (ControlBase & { type: 'credential-protection'; nodes: string[] });
 
 export interface Scenario {
   id: string;

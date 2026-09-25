@@ -6,6 +6,8 @@ All notable changes are documented here. The project follows [Semantic Versionin
 
 ### Added
 
+- Controls `least-privilege` (revoke a right, which also removes the credential it leaves cached) and `credential-protection`.
+- Templates: Small Office and Active Directory.
 - Simulation engine: capabilities, 8 techniques mapped to MITRE ATT&CK, 4 controls with precise effects, breadth-first saturation, explanations for every step.
 - Strict validator for untrusted labs and JSON Schema of the `.attackgraph.json` format (0.1.0).
 - Web Application template with two scenarios.

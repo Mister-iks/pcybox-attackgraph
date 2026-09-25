@@ -287,6 +287,17 @@ function readControl(r: Reader, v: unknown, p: string): Control {
       return { ...base, type, nodes: ids('nodes') };
     case 'mfa':
       return { ...base, type, identities: ids('identities') };
+    case 'credential-protection':
+      return { ...base, type, nodes: ids('nodes') };
+    case 'least-privilege':
+      return {
+        ...base,
+        type,
+        revoke: r.list(o.revoke, `${p}.revoke`, LIMITS.items, (x, q) => {
+          const rv = r.object(x, q);
+          return { identity: r.id(rv.identity, `${q}.identity`), node: r.id(rv.node, `${q}.node`) };
+        }),
+      };
   }
 }
 
@@ -338,10 +349,16 @@ function checkReferences(r: Reader, lab: Lab): void {
   );
   lab.assets.forEach((a, i) => ref(nodes, a.node, `$.assets[${i}].node`, 'node'));
   lab.controls.forEach((c, i) => {
-    if (c.type === 'patch' || c.type === 'secrets-vault') {
+    if (c.type === 'patch' || c.type === 'secrets-vault' || c.type === 'credential-protection') {
       c.nodes.forEach((n, j) => ref(nodes, n, `$.controls[${i}].nodes[${j}]`, 'node'));
     }
     if (c.type === 'mfa') c.identities.forEach((n, j) => ref(identities, n, `$.controls[${i}].identities[${j}]`, 'identity'));
+    if (c.type === 'least-privilege') {
+      c.revoke.forEach((rv, j) => {
+        ref(identities, rv.identity, `$.controls[${i}].revoke[${j}].identity`, 'identity');
+        ref(nodes, rv.node, `$.controls[${i}].revoke[${j}].node`, 'node');
+      });
+    }
   });
   lab.scenarios.forEach((s, i) => {
     ref(nodes, s.entry.node, `$.scenarios[${i}].entry.node`, 'node');

@@ -5,7 +5,11 @@ import type { Block, Fact, Lab, Level, Message, Outcome, SimEvent, SimResult } f
 const MAX_ROUNDS = 1000;
 
 class State implements StateView {
-  constructor(private readonly facts: ReadonlyMap<string, Fact>) {}
+  private readonly facts: ReadonlyMap<string, Fact>;
+
+  constructor(facts: ReadonlyMap<string, Fact>) {
+    this.facts = facts;
+  }
 
   hasFoothold(node: string, level: Level): boolean {
     return this.facts.has(`foothold:${node}:admin`) || (level === 'user' && this.facts.has(`foothold:${node}:user`));

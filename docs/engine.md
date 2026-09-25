@@ -24,8 +24,8 @@ A technique has **preconditions** and **effects**. Each is mapped to a MITRE ATT
 | `exploit-remote-service` | TA0008, T1210 | same, from an internal foothold | foothold |
 | `privilege-escalation` | TA0004, T1068 | user foothold; out of date operating system | admin foothold |
 | `credentials-in-files` | TA0006, T1552.001 | foothold at the required level; a configuration secret on the node | credential |
-| `credential-dumping` | TA0006, T1003 | admin foothold; credentials cached in memory | credential |
-| `remote-login` | TA0008, T1021 | credential; the identity may log in to the node over SSH, RDP or SMB; the service is reachable; MFA does not apply or is off | foothold at the identity's level |
+| `credential-dumping` | TA0006, T1003 | admin foothold; credentials cached in memory (the identity logs on to the node) | credential |
+| `remote-login` | TA0008, T1021 | credential; the identity may log in to the node over SSH, RDP or SMB (right not revoked); the service is reachable; MFA does not apply or is off | foothold at the identity's level |
 | `database-access` | TA0009, T1213 | credential with database privilege; database service reachable | data of the assets on that node |
 | `local-data-access` | TA0009, T1005 | foothold at the level the asset requires | data |
 
@@ -51,6 +51,8 @@ A control never has a global "blocks the attack" effect. It breaks precise preco
 | `secrets-vault` | configuration secrets on the listed nodes | credentials cached in memory |
 | `mfa` | interactive logins (SSH, RDP, VPN, web) of the listed identities | service logins such as databases |
 | `patch` | vulnerable components and out of date systems on the listed nodes | injection flaws in the application code |
+| `least-privilege` | the listed rights (identity on node): no login there, and no credential of that identity cached there | the other rights of the identity |
+| `credential-protection` | extraction of credentials cached in memory on the listed nodes | credentials stored in configuration files |
 
 Each precondition check returns one of three results:
 

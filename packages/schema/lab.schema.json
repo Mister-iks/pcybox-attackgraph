@@ -164,15 +164,25 @@
       "required": ["id", "type", "label", "enabled"],
       "properties": {
         "id": { "$ref": "#/$defs/id" },
-        "type": { "enum": ["segmentation", "secrets-vault", "mfa", "patch"] },
+        "type": { "enum": ["segmentation", "secrets-vault", "mfa", "patch", "least-privilege", "credential-protection"] },
         "label": { "$ref": "#/$defs/localized" },
         "description": { "$ref": "#/$defs/localized" },
         "enabled": { "type": "boolean" },
         "nodes": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/id" } },
-        "identities": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/id" } }
+        "identities": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/id" } },
+        "revoke": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "type": "object",
+            "required": ["identity", "node"],
+            "properties": { "identity": { "$ref": "#/$defs/id" }, "node": { "$ref": "#/$defs/id" } }
+          }
+        }
       },
       "allOf": [
-        { "if": { "properties": { "type": { "enum": ["secrets-vault", "patch"] } } }, "then": { "required": ["nodes"] } },
+        { "if": { "properties": { "type": { "enum": ["secrets-vault", "patch", "credential-protection"] } } }, "then": { "required": ["nodes"] } },
+        { "if": { "properties": { "type": { "const": "least-privilege" } } }, "then": { "required": ["revoke"] } },
         { "if": { "properties": { "type": { "const": "mfa" } } }, "then": { "required": ["identities"] } }
       ]
     },

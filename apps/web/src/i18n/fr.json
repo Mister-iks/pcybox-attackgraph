@@ -195,5 +195,8 @@
   "block.segmentation": "Segmentation entre {fromZone} et {toZone} : {from} ne peut pas joindre {to} sur le port {port}.",
   "block.patch": "{node} est à jour : la faiblesse ({weakness}) est corrigée.",
   "block.vault": "{node} ne stocke plus les identifiants de {identity}.",
-  "block.mfa": "{identity} a besoin d’un second facteur pour se connecter à {node} ; le secret volé ne suffit pas."
+  "block.mfa": "{identity} a besoin d’un second facteur pour se connecter à {node} ; le secret volé ne suffit pas.",
+  "block.leastPrivilege": "Moindre privilège : {identity} n’a plus le droit de se connecter à {node}.",
+  "block.leastPrivilegeCache": "Moindre privilège : {identity} ne se connecte plus à {node}, donc aucun de ses identifiants n’y est conservé.",
+  "block.credentialProtection": "Les identifiants conservés sur {node} sont protégés : le secret de {identity} ne peut pas être extrait de la mémoire."
 }

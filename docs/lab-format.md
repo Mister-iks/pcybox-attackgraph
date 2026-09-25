@@ -80,6 +80,8 @@ An edge is a **declared, intended flow**, not a cable: `source` opens connection
 | `secrets-vault` | `nodes` | configuration secrets on these nodes are gone |
 | `mfa` | `identities` | interactive logins of these identities need a second factor |
 | `patch` | `nodes` | vulnerable components and out of date systems on these nodes are fixed |
+| `least-privilege` | `revoke`: list of `{ identity, node }` | the identity can no longer log on to the node, and leaves no cached credential there |
+| `credential-protection` | `nodes` | credentials cached in memory on these nodes cannot be extracted |
 
 ## Scenarios
 

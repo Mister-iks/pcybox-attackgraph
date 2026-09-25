@@ -195,5 +195,8 @@
   "block.segmentation": "Segmentation between {fromZone} and {toZone}: {from} cannot reach {to} on port {port}.",
   "block.patch": "{node} is up to date: the {weakness} is fixed.",
   "block.vault": "{node} no longer stores the credentials of {identity}.",
-  "block.mfa": "{identity} needs a second factor to log in to {node}; the stolen secret alone is not enough."
+  "block.mfa": "{identity} needs a second factor to log in to {node}; the stolen secret alone is not enough.",
+  "block.leastPrivilege": "Least privilege: {identity} is no longer allowed to log on to {node}.",
+  "block.leastPrivilegeCache": "Least privilege: {identity} no longer logs on to {node}, so none of its credentials are cached there.",
+  "block.credentialProtection": "The credentials cached on {node} are protected: the secret of {identity} cannot be extracted from memory."
 }
