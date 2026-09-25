@@ -1,0 +1,189 @@
+{
+  "$schema": "../../packages/schema/lab.schema.json",
+  "formatVersion": "0.1.0",
+  "id": "tpl-small-office",
+  "meta": {
+    "title": { "en": "Small Office", "fr": "Petite entreprise" },
+    "description": {
+      "en": "Two office PCs and a file server. Every PC shares the same local administrator password, the IT administrator logs on everywhere, and one PC offers remote desktop to the Internet.",
+      "fr": "Deux PC de bureau et un serveur de fichiers. Tous les PC partagent le même mot de passe administrateur local, l'administrateur informatique se connecte partout, et un PC ouvre le bureau à distance sur Internet."
+    },
+    "authors": ["PCYBOX AttackGraph contributors"],
+    "license": "CC-BY-4.0",
+    "difficulty": "beginner",
+    "tags": ["password-reuse", "lateral-movement", "mfa", "patching"]
+  },
+  "zones": [
+    { "id": "internet", "type": "internet", "label": { "en": "Internet", "fr": "Internet" } },
+    { "id": "office", "type": "internal", "label": { "en": "Office", "fr": "Bureaux" } },
+    { "id": "servers", "type": "production", "label": { "en": "Servers", "fr": "Serveurs" } }
+  ],
+  "nodes": [
+    {
+      "id": "internet",
+      "type": "internet",
+      "label": { "en": "Internet", "fr": "Internet" },
+      "zone": "internet",
+      "services": [],
+      "weaknesses": [],
+      "secrets": [],
+      "position": { "x": 0, "y": 190 }
+    },
+    {
+      "id": "ws-01",
+      "type": "workstation",
+      "label": { "en": "Reception PC", "fr": "PC de l'accueil" },
+      "zone": "office",
+      "services": [
+        { "id": "smb", "kind": "smb", "port": 445, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": ["unpatched-os"],
+      "secrets": [
+        { "identity": "local-admin", "kind": "cached-credential", "requires": "admin" },
+        { "identity": "it-admin", "kind": "cached-credential", "requires": "admin" }
+      ],
+      "position": { "x": 300, "y": 60 }
+    },
+    {
+      "id": "ws-02",
+      "type": "workstation",
+      "label": { "en": "Accounting PC", "fr": "PC de la comptabilité" },
+      "zone": "office",
+      "services": [
+        { "id": "rdp", "kind": "rdp", "port": 3389, "protocol": "tcp", "auth": "password", "runsAs": "user", "weaknesses": ["vulnerable-component"] },
+        { "id": "smb", "kind": "smb", "port": 445, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": ["unpatched-os"],
+      "secrets": [{ "identity": "local-admin", "kind": "cached-credential", "requires": "admin" }],
+      "position": { "x": 300, "y": 320 }
+    },
+    {
+      "id": "fs-01",
+      "type": "file-share",
+      "label": { "en": "File Server", "fr": "Serveur de fichiers" },
+      "zone": "servers",
+      "services": [
+        { "id": "smb", "kind": "smb", "port": 445, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] },
+        { "id": "rdp", "kind": "rdp", "port": 3389, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": [],
+      "secrets": [],
+      "position": { "x": 660, "y": 190 }
+    }
+  ],
+  "edges": [
+    { "id": "f-internet-ws02", "source": "internet", "target": "ws-02", "port": 3389, "protocol": "tcp" },
+    { "id": "f-ws01-fs", "source": "ws-01", "target": "fs-01", "port": 445, "protocol": "tcp" },
+    { "id": "f-ws02-fs", "source": "ws-02", "target": "fs-01", "port": 445, "protocol": "tcp" }
+  ],
+  "identities": [
+    {
+      "id": "local-admin",
+      "type": "admin",
+      "label": { "en": "Shared local administrator", "fr": "Administrateur local partagé" },
+      "privileges": [
+        { "node": "ws-01", "level": "admin", "via": ["smb", "rdp"] },
+        { "node": "ws-02", "level": "admin", "via": ["smb", "rdp"] },
+        { "node": "fs-01", "level": "admin", "via": ["smb"] }
+      ]
+    },
+    {
+      "id": "it-admin",
+      "type": "admin",
+      "label": { "en": "IT administrator", "fr": "Administrateur informatique" },
+      "privileges": [
+        { "node": "ws-01", "level": "admin", "via": ["rdp", "smb"] },
+        { "node": "ws-02", "level": "admin", "via": ["rdp", "smb"] },
+        { "node": "fs-01", "level": "admin", "via": ["rdp", "smb"] }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "accounting",
+      "kind": "payment",
+      "label": { "en": "Accounting files", "fr": "Fichiers comptables" },
+      "node": "fs-01",
+      "requires": "user",
+      "cia": { "c": 4, "i": 4, "a": 3 }
+    },
+    {
+      "id": "backups",
+      "kind": "backups",
+      "label": { "en": "Backups", "fr": "Sauvegardes" },
+      "node": "fs-01",
+      "requires": "admin",
+      "cia": { "c": 3, "i": 4, "a": 4 }
+    }
+  ],
+  "controls": [
+    {
+      "id": "patch-pcs",
+      "type": "patch",
+      "label": { "en": "Update the PCs", "fr": "Mettre à jour les PC" },
+      "description": {
+        "en": "Installs the operating system and remote desktop updates on both PCs.",
+        "fr": "Installe les mises à jour du système et du bureau à distance sur les deux PC."
+      },
+      "nodes": ["ws-01", "ws-02"],
+      "enabled": false
+    },
+    {
+      "id": "unique-local-admin",
+      "type": "least-privilege",
+      "label": { "en": "Unique local admin passwords", "fr": "Mots de passe admin local uniques" },
+      "description": {
+        "en": "Each machine gets its own local administrator password: the one stolen on the reception PC opens nothing else.",
+        "fr": "Chaque machine a son propre mot de passe administrateur local : celui volé sur le PC de l'accueil n'ouvre rien d'autre."
+      },
+      "revoke": [
+        { "identity": "local-admin", "node": "ws-02" },
+        { "identity": "local-admin", "node": "fs-01" }
+      ],
+      "enabled": false
+    },
+    {
+      "id": "mfa-it",
+      "type": "mfa",
+      "label": { "en": "MFA for the IT administrator", "fr": "MFA pour l'administrateur informatique" },
+      "description": {
+        "en": "Remote desktop logins of the IT administrator need a second factor. File sharing (SMB) logins do not ask for one.",
+        "fr": "Les connexions bureau à distance de l'administrateur informatique exigent un second facteur. Les connexions de partage de fichiers (SMB) n'en demandent pas."
+      },
+      "identities": ["it-admin"],
+      "enabled": false
+    },
+    {
+      "id": "segmentation",
+      "type": "segmentation",
+      "label": { "en": "Separate office and servers", "fr": "Séparer bureaux et serveurs" },
+      "description": {
+        "en": "Between the office and the servers, only file sharing from the PCs is allowed.",
+        "fr": "Entre les bureaux et les serveurs, seul le partage de fichiers depuis les PC est autorisé."
+      },
+      "enabled": false
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "phishing",
+      "label": { "en": "Phishing at the reception", "fr": "Hameçonnage à l'accueil" },
+      "description": {
+        "en": "A malicious attachment is opened on the reception PC. The attacker wants the accounting files.",
+        "fr": "Une pièce jointe piégée est ouverte sur le PC de l'accueil. L'attaquant veut les fichiers comptables."
+      },
+      "entry": { "node": "ws-01", "level": "user" },
+      "target": "accounting"
+    },
+    {
+      "id": "exposed-rdp",
+      "label": { "en": "Remote desktop open to the Internet", "fr": "Bureau à distance ouvert sur Internet" },
+      "description": {
+        "en": "The accounting PC accepts remote desktop from the Internet for teleworking. The attacker wants the backups.",
+        "fr": "Le PC de la comptabilité accepte le bureau à distance depuis Internet pour le télétravail. L'attaquant veut les sauvegardes."
+      },
+      "entry": { "node": "internet", "level": "admin" },
+      "target": "backups"
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "$schema": "../../packages/schema/lab.schema.json",
+  "formatVersion": "0.1.0",
+  "id": "tpl-active-directory",
+  "meta": {
+    "title": { "en": "Active Directory", "fr": "Active Directory" },
+    "description": {
+      "en": "A Windows domain: an employee workstation, a file server and a domain controller. Domain administrators log on to workstations and servers to fix things, and leave their credentials behind.",
+      "fr": "Un domaine Windows : un poste employé, un serveur de fichiers et un contrôleur de domaine. Les administrateurs du domaine se connectent aux postes et serveurs pour les dépanner, et y laissent leurs identifiants."
+    },
+    "authors": ["PCYBOX AttackGraph contributors"],
+    "license": "CC-BY-4.0",
+    "difficulty": "intermediate",
+    "tags": ["active-directory", "credential-access", "tiering", "lateral-movement"]
+  },
+  "zones": [
+    { "id": "internet", "type": "internet", "label": { "en": "Internet", "fr": "Internet" } },
+    { "id": "workstations", "type": "internal", "label": { "en": "Workstations", "fr": "Postes de travail" } },
+    { "id": "servers", "type": "production", "label": { "en": "Servers", "fr": "Serveurs" } },
+    { "id": "tier0", "type": "restricted", "label": { "en": "Domain controllers", "fr": "Contrôleurs de domaine" } }
+  ],
+  "nodes": [
+    {
+      "id": "internet",
+      "type": "internet",
+      "label": { "en": "Internet", "fr": "Internet" },
+      "zone": "internet",
+      "services": [],
+      "weaknesses": [],
+      "secrets": [],
+      "position": { "x": 0, "y": 80 }
+    },
+    {
+      "id": "ws-01",
+      "type": "workstation",
+      "label": { "en": "Employee Workstation", "fr": "Poste employé" },
+      "zone": "workstations",
+      "services": [
+        { "id": "smb", "kind": "smb", "port": 445, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] },
+        { "id": "rdp", "kind": "rdp", "port": 3389, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": ["unpatched-os"],
+      "secrets": [
+        { "identity": "helpdesk", "kind": "cached-credential", "requires": "admin" },
+        { "identity": "domain-admin", "kind": "cached-credential", "requires": "admin" }
+      ],
+      "position": { "x": 300, "y": 80 }
+    },
+    {
+      "id": "srv-01",
+      "type": "file-share",
+      "label": { "en": "File Server", "fr": "Serveur de fichiers" },
+      "zone": "servers",
+      "services": [
+        { "id": "smb", "kind": "smb", "port": 445, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] },
+        { "id": "rdp", "kind": "rdp", "port": 3389, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": [],
+      "secrets": [{ "identity": "domain-admin", "kind": "cached-credential", "requires": "admin" }],
+      "position": { "x": 660, "y": 80 }
+    },
+    {
+      "id": "dc-01",
+      "type": "domain-controller",
+      "label": { "en": "Domain Controller", "fr": "Contrôleur de domaine" },
+      "zone": "tier0",
+      "services": [
+        { "id": "smb", "kind": "smb", "port": 445, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] },
+        { "id": "rdp", "kind": "rdp", "port": 3389, "protocol": "tcp", "auth": "password", "runsAs": "admin", "weaknesses": [] }
+      ],
+      "weaknesses": [],
+      "secrets": [],
+      "position": { "x": 480, "y": 360 }
+    }
+  ],
+  "edges": [
+    { "id": "f-ws-srv", "source": "ws-01", "target": "srv-01", "port": 445, "protocol": "tcp" },
+    { "id": "f-ws-dc", "source": "ws-01", "target": "dc-01", "port": 445, "protocol": "tcp" },
+    { "id": "f-srv-dc", "source": "srv-01", "target": "dc-01", "port": 445, "protocol": "tcp" }
+  ],
+  "identities": [
+    {
+      "id": "helpdesk",
+      "type": "admin",
+      "label": { "en": "Helpdesk technician", "fr": "Technicien support" },
+      "privileges": [{ "node": "ws-01", "level": "admin", "via": ["rdp", "smb"] }]
+    },
+    {
+      "id": "domain-admin",
+      "type": "domain-admin",
+      "label": { "en": "Domain administrator", "fr": "Administrateur du domaine" },
+      "privileges": [
+        { "node": "ws-01", "level": "admin", "via": ["rdp", "smb"] },
+        { "node": "srv-01", "level": "admin", "via": ["rdp", "smb"] },
+        { "node": "dc-01", "level": "admin", "via": ["rdp", "smb"] }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "domain-control",
+      "kind": "domain-control",
+      "label": { "en": "Control of the domain", "fr": "Contrôle du domaine" },
+      "node": "dc-01",
+      "requires": "admin",
+      "cia": { "c": 4, "i": 4, "a": 4 }
+    },
+    {
+      "id": "shared-files",
+      "kind": "customer-data",
+      "label": { "en": "Shared files", "fr": "Fichiers partagés" },
+      "node": "srv-01",
+      "requires": "admin",
+      "cia": { "c": 3, "i": 3, "a": 3 }
+    }
+  ],
+  "controls": [
+    {
+      "id": "tiering",
+      "type": "least-privilege",
+      "label": { "en": "Admin tiering", "fr": "Cloisonnement des admins" },
+      "description": {
+        "en": "Domain administrators only log on to domain controllers. Workstations and servers are managed with other accounts.",
+        "fr": "Les administrateurs du domaine ne se connectent qu'aux contrôleurs de domaine. Postes et serveurs sont gérés avec d'autres comptes."
+      },
+      "revoke": [
+        { "identity": "domain-admin", "node": "ws-01" },
+        { "identity": "domain-admin", "node": "srv-01" }
+      ],
+      "enabled": false
+    },
+    {
+      "id": "credential-protection",
+      "type": "credential-protection",
+      "label": { "en": "Protect cached credentials", "fr": "Protéger les identifiants en mémoire" },
+      "description": {
+        "en": "Credentials cached on the workstation and the file server can no longer be extracted from memory.",
+        "fr": "Les identifiants conservés sur le poste et le serveur de fichiers ne peuvent plus être extraits de la mémoire."
+      },
+      "nodes": ["ws-01", "srv-01"],
+      "enabled": false
+    },
+    {
+      "id": "patch-ws",
+      "type": "patch",
+      "label": { "en": "Update the workstation", "fr": "Mettre à jour le poste" },
+      "description": {
+        "en": "Fixes the operating system flaw that lets a user become administrator.",
+        "fr": "Corrige la faille du système qui permet à un utilisateur de devenir administrateur."
+      },
+      "nodes": ["ws-01"],
+      "enabled": false
+    },
+    {
+      "id": "mfa-da",
+      "type": "mfa",
+      "label": { "en": "MFA for domain admins", "fr": "MFA pour les admins du domaine" },
+      "description": {
+        "en": "Remote desktop logins of domain administrators need a second factor. Network logins over SMB do not ask for one.",
+        "fr": "Les connexions bureau à distance des administrateurs du domaine exigent un second facteur. Les connexions réseau SMB n'en demandent pas."
+      },
+      "identities": ["domain-admin"],
+      "enabled": false
+    },
+    {
+      "id": "segmentation",
+      "type": "segmentation",
+      "label": { "en": "Segmentation between tiers", "fr": "Segmentation entre niveaux" },
+      "description": {
+        "en": "Between zones, only the declared flows are allowed. Workstations still need SMB to the domain controller.",
+        "fr": "Entre zones, seuls les flux déclarés sont autorisés. Les postes ont toujours besoin de SMB vers le contrôleur de domaine."
+      },
+      "enabled": false
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "phishing",
+      "label": { "en": "Phishing on a workstation", "fr": "Hameçonnage sur un poste" },
+      "description": {
+        "en": "An employee opens a malicious attachment. The attacker wants control of the domain.",
+        "fr": "Un employé ouvre une pièce jointe piégée. L'attaquant veut le contrôle du domaine."
+      },
+      "entry": { "node": "ws-01", "level": "user" },
+      "target": "domain-control"
+    },
+    {
+      "id": "server-breach",
+      "label": { "en": "Assumed breach: file server", "fr": "Compromission supposée : serveur de fichiers" },
+      "description": {
+        "en": "Assume the attacker is administrator of the file server. Can it take the domain?",
+        "fr": "On suppose l'attaquant administrateur du serveur de fichiers. Peut-il prendre le domaine ?"
+      },
+      "entry": { "node": "srv-01", "level": "admin" },
+      "target": "domain-control"
+    }
+  ]
+}
