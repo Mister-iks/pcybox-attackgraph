@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { duplicateNode } from './editor/ops.ts';
 import { LOCALES } from './i18n/locales.ts';
 import { decodeShareHash } from './lab/share.ts';
 import { useApp } from './store.ts';
@@ -34,6 +35,7 @@ export function useShortcuts(): void {
       // Arrow keys move a focused node on the map, and tabs handle their own arrows.
       const inMap = e.target instanceof HTMLElement && e.target.closest('.react-flow__node') !== null;
       const s = useApp.getState();
+      if (s.mode === 'edit') return;
       if (e.key === ' ' && !isInteractive(e.target) && !inMap) {
         e.preventDefault();
         s.togglePlay();
@@ -72,4 +74,36 @@ export function useDocumentSettings(): void {
     html.dir = LOCALES[locale].dir;
     html.dataset.theme = theme;
   }, [locale, theme]);
+}
+
+/** Ctrl+Z undoes, Ctrl+Y or Ctrl+Shift+Z redoes, Ctrl+D duplicates the selected element. */
+export function useEditShortcuts(): void {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const s = useApp.getState();
+      if (s.mode !== 'edit' || !(e.ctrlKey || e.metaKey) || e.altKey) return;
+      // Text fields keep their own undo.
+      if (isEditable(e.target)) return;
+      const key = e.key.toLowerCase();
+      if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        s.undo();
+      } else if (key === 'y' || (key === 'z' && e.shiftKey)) {
+        e.preventDefault();
+        s.redo();
+      } else if (key === 'd' && s.selection?.kind === 'node') {
+        e.preventDefault();
+        const source = s.selection.id;
+        let id = source;
+        s.edit((lab) => {
+          const r = duplicateNode(lab, source);
+          id = r.id;
+          return r.lab;
+        });
+        s.select({ kind: 'node', id });
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 }

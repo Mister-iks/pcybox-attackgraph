@@ -1,7 +1,7 @@
 import { withControl } from '@pcybox/attackgraph-engine';
 import { compressToEncodedURIComponent } from 'lz-string';
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_LAB } from '../src/lab/template.ts';
+import { DEFAULT_LAB } from '../src/lab/templates.ts';
 import { decodeShareHash, encodeShareHash } from '../src/lab/share.ts';
 
 describe('share links', () => {

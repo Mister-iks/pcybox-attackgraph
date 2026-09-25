@@ -81,7 +81,7 @@ function ControlsPanel() {
 function Inspector() {
   const f = useFormat();
   const lab = useApp((s) => s.lab);
-  const selected = useApp((s) => s.selectedNode);
+  const selected = useApp((s) => (s.selection?.kind === 'node' ? s.selection.id : null));
   const titleId = useId();
   const node = lab.nodes.find((n) => n.id === selected);
 

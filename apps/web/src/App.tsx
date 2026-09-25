@@ -5,15 +5,19 @@ import { Canvas } from './components/Canvas.tsx';
 import { Header } from './components/Header.tsx';
 import { Sidebar } from './components/Sidebar.tsx';
 import { OutcomeBanner, StepAnnouncer, ToastView } from './components/Status.tsx';
-import { useDocumentSettings, usePlayback, useSharedLab, useShortcuts } from './hooks.ts';
+import { EditorPanel } from './editor/EditorPanel.tsx';
+import { Palette } from './editor/Palette.tsx';
+import { useDocumentSettings, useEditShortcuts, usePlayback, useSharedLab, useShortcuts } from './hooks.ts';
 import { useFormat } from './i18n/format.ts';
 import { LOCALES } from './i18n/locales.ts';
 import { useApp } from './store.ts';
 
 function Layout() {
   const f = useFormat();
+  const editing = useApp((s) => s.mode === 'edit');
   usePlayback();
   useShortcuts();
+  useEditShortcuts();
   useSharedLab();
   useDocumentSettings();
 
@@ -23,13 +27,20 @@ function Layout() {
         {f.t('app.skip')}
       </a>
       <Header />
-      <main className="workspace">
+      <main className={`workspace${editing ? ' is-edit' : ''}`}>
+        {editing && <Palette />}
         <section id="map" className="map" tabIndex={-1}>
           <Canvas />
-          <OutcomeBanner />
+          {!editing && <OutcomeBanner />}
         </section>
-        <BottomPanel />
-        <Sidebar />
+        {editing ? (
+          <EditorPanel />
+        ) : (
+          <>
+            <BottomPanel />
+            <Sidebar />
+          </>
+        )}
       </main>
       <StepAnnouncer />
       <ToastView />

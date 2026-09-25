@@ -41,10 +41,15 @@ Then open the URL printed in the terminal, click **Run attack**, switch **Networ
 
 Keyboard: `Space` plays or pauses, arrow keys step through the attack, `Home` goes back to the start.
 
-## What is in v0.1
+### Build your own lab
 
-- The **Web Application** template: a public web server, an internal API, a customer database and an admin jump host, with two scenarios (attack from the Internet, assumed breach of the web server).
-- A deterministic engine with 8 techniques and 4 controls (segmentation, secrets removal, MFA, patch).
+Switch to **Edit**, then drag elements from the palette onto the map, connect them by dragging from the dot on the side of an element, and fill in services, weaknesses, stored credentials, identities, assets, controls and scenarios in the side panel. The **Problems** tab points out what is probably wrong (a flow to a port without service, a control that applies to nothing...). Undo and redo with `Ctrl+Z` and `Ctrl+Y`. Your lab is saved in the browser and can be exported, imported and shared by link.
+
+## What is in the app
+
+- Three templates: **Web Application** (flat network, leftover secrets), **Small Office** (shared local admin password, remote desktop open to the Internet) and **Active Directory** (domain admins logging on to workstations, admin tiering).
+- A **lab editor**: palette, connections by drag and drop, forms for every part of a lab, live problem detection, undo and redo, autosave.
+- A deterministic engine with 8 techniques and 6 controls (segmentation, secrets vault, MFA, patching, least privilege, credential protection).
 - Animated map, timeline with x1/x2/x4 replay, **Why?** panel, **Before / after** comparison, **Text view**.
 - Sharing by link (the whole lab travels in the URL fragment, nothing is stored on a server), export and import of `.attackgraph.json` files.
 - English and French, light and dark themes, reduced motion support.
@@ -99,8 +104,8 @@ Performance budget: at most 250 kB of initial JavaScript (gzip). The CI fails ab
 
 | Version | Focus |
 |---|---|
-| **v0.1** (in progress) | One network, one attack, one defense: the Web Application template |
-| v0.2 | Lab editor, 3 templates, Spanish and Brazilian Portuguese, command line tool |
+| v0.1 | One network, one attack, one defense: the Web Application template |
+| **v0.2** (in progress) | Lab editor, 3 templates, command line tool |
 | v0.3 | Attack paths, choke points, blast radius, embeddable view, offline PWA |
 | v0.5 | Challenge mode, teacher mode, 10 missions aligned with NICE, ECSF and CyBOK |
 | v1.0 | Stable format, 8 templates, 9 languages including Arabic and Chinese |

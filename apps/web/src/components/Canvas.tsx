@@ -1,8 +1,9 @@
-import type { LabNode } from '@pcybox/attackgraph-engine';
+import { NODE_TYPES, type LabNode, type NodeType } from '@pcybox/attackgraph-engine';
 import {
   applyNodeChanges,
   Background,
   BaseEdge,
+  ConnectionMode,
   Controls,
   EdgeLabelRenderer,
   Handle,
@@ -10,6 +11,8 @@ import {
   Position,
   ReactFlow,
   useInternalNode,
+  useReactFlow,
+  type Connection,
   type Edge,
   type EdgeProps,
   type InternalNode,
@@ -19,14 +22,13 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Crosshair, Crown, ShieldCheck, Skull, Bug } from 'lucide-react';
-import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState, type DragEvent } from 'react';
+import { addEdge, addNode, freeSpot, NODE_HEIGHT, NODE_WIDTH, removeEdges, removeNodes } from '../editor/ops.ts';
 import { useFormat } from '../i18n/format.ts';
 import { currentEventIndex, useApp } from '../store.ts';
 import { deriveView, type MapView } from '../view.ts';
 import { NODE_ICONS } from './icons.tsx';
 
-const NODE_WIDTH = 196;
-const NODE_HEIGHT = 96;
 const ZONE_PADDING = 28;
 const ZONE_HEADER = 30;
 
@@ -216,54 +218,75 @@ const edgeTypes = { flow: FlowEdge, attack: AttackEdge };
 /* Canvas                                                              */
 /* ------------------------------------------------------------------ */
 
-function toFlowNodes(nodes: LabNode[]): Node<AssetNodeData>[] {
-  return nodes.map((n) => ({ id: n.id, type: 'asset', position: n.position, data: { labNode: n }, zIndex: 1 }));
+function toFlowNodes(nodes: LabNode[], selectedId: string | null, editing: boolean): Node<AssetNodeData>[] {
+  return nodes.map((n) => ({
+    id: n.id,
+    type: 'asset',
+    position: n.position,
+    data: { labNode: n },
+    zIndex: 1,
+    selected: n.id === selectedId,
+    deletable: editing,
+  }));
 }
+
+export const NODE_DRAG_TYPE = 'application/x-attackgraph-node';
 
 export function Canvas() {
   const f = useFormat();
+  const locale = useApp((s) => s.locale);
   const lab = useApp((s) => s.lab);
   const scenarioId = useApp((s) => s.scenarioId);
   const result = useApp((s) => s.result);
   const cursor = useApp((s) => s.cursor);
   const currentIndex = useApp(currentEventIndex);
   const theme = useApp((s) => s.theme);
-  const selectNode = useApp((s) => s.selectNode);
-  const moveNode = useApp((s) => s.moveNode);
+  const selection = useApp((s) => s.selection);
+  const editing = useApp((s) => s.mode === 'edit');
+  const { select, moveNode, edit } = useApp.getState();
+  const { screenToFlowPosition } = useReactFlow();
 
-  const [assetNodes, setAssetNodes] = useState(() => toFlowNodes(lab.nodes));
-  useEffect(() => setAssetNodes(toFlowNodes(lab.nodes)), [lab.nodes]);
+  const selectedNode = selection?.kind === 'node' ? selection.id : null;
+  const selectedEdge = selection?.kind === 'edge' ? selection.id : null;
+
+  const [assetNodes, setAssetNodes] = useState(() => toFlowNodes(lab.nodes, selectedNode, editing));
+  useEffect(() => setAssetNodes(toFlowNodes(lab.nodes, selectedNode, editing)), [lab.nodes, selectedNode, editing]);
 
   const view = useMemo(
     () => deriveView(lab, scenarioId, result, cursor, currentIndex),
     [lab, scenarioId, result, cursor, currentIndex],
   );
 
-  const zoneNodes = useMemo<Node<ZoneNodeData>[]>(() => {
+  const zoneBoxes = useMemo(() => {
     const positions = new Map(assetNodes.map((n) => [n.id, n.position]));
     return lab.zones.flatMap((z) => {
       const members = lab.nodes.filter((n) => n.zone === z.id).map((n) => positions.get(n.id) ?? n.position);
       if (members.length === 0) return [];
-      const minX = Math.min(...members.map((p) => p.x)) - ZONE_PADDING;
-      const minY = Math.min(...members.map((p) => p.y)) - ZONE_PADDING - ZONE_HEADER;
-      const maxX = Math.max(...members.map((p) => p.x)) + NODE_WIDTH + ZONE_PADDING;
-      const maxY = Math.max(...members.map((p) => p.y)) + NODE_HEIGHT + ZONE_PADDING + 24;
-      return [
-        {
-          id: `zone:${z.id}`,
-          type: 'zone',
-          position: { x: minX, y: minY },
-          width: maxX - minX,
-          height: maxY - minY,
-          data: { label: f.text(z.label), zoneType: z.type },
-          selectable: false,
-          draggable: false,
-          focusable: false,
-          zIndex: 0,
-        },
-      ];
+      const x = Math.min(...members.map((p) => p.x)) - ZONE_PADDING;
+      const y = Math.min(...members.map((p) => p.y)) - ZONE_PADDING - ZONE_HEADER;
+      const right = Math.max(...members.map((p) => p.x)) + NODE_WIDTH + ZONE_PADDING;
+      const bottom = Math.max(...members.map((p) => p.y)) + NODE_HEIGHT + ZONE_PADDING + 24;
+      return [{ zone: z, x, y, width: right - x, height: bottom - y }];
     });
-  }, [assetNodes, lab, f]);
+  }, [assetNodes, lab]);
+
+  const zoneNodes = useMemo<Node<ZoneNodeData>[]>(
+    () =>
+      zoneBoxes.map((b) => ({
+        id: `zone:${b.zone.id}`,
+        type: 'zone',
+        position: { x: b.x, y: b.y },
+        width: b.width,
+        height: b.height,
+        data: { label: f.text(b.zone.label), zoneType: b.zone.type },
+        selectable: false,
+        draggable: false,
+        focusable: false,
+        deletable: false,
+        zIndex: 0,
+      })),
+    [zoneBoxes, f],
+  );
 
   const nodes = useMemo<Node[]>(() => {
     const statusText = (id: string) => f.t(`status.${statusOf(view, id)}`);
@@ -290,8 +313,10 @@ export function Canvas() {
       type: 'flow',
       label: String(e.port),
       markerEnd: { type: MarkerType.ArrowClosed, width: 14, height: 14, color: 'var(--edge)' },
-      focusable: false,
-      selectable: false,
+      focusable: editing,
+      selectable: editing,
+      deletable: editing,
+      selected: e.id === selectedEdge,
       zIndex: 0,
     }));
     const attacks: Edge<AttackEdgeData>[] = view.arrows.map((a) => ({
@@ -308,30 +333,89 @@ export function Canvas() {
       },
       focusable: false,
       selectable: false,
+      deletable: false,
       zIndex: 2,
     }));
     return [...flows, ...attacks];
-  }, [lab.edges, view.arrows]);
+  }, [lab.edges, view.arrows, editing, selectedEdge]);
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setAssetNodes((ns) => applyNodeChanges(changes, ns) as Node<AssetNodeData>[]);
+    // Removals go through the lab (onNodesDelete) so they can be undone; selection lives in the store.
+    const local = changes.filter((c) => c.type !== 'remove' && c.type !== 'select');
+    setAssetNodes((ns) => applyNodeChanges(local, ns) as Node<AssetNodeData>[]);
   }, []);
+
+  /** Zone under a point of the map, or the first zone that is not the Internet. */
+  const zoneAt = (p: { x: number; y: number }) => {
+    const hit = zoneBoxes.find((b) => p.x >= b.x && p.x <= b.x + b.width && p.y >= b.y && p.y <= b.y + b.height);
+    return hit?.zone.id ?? lab.zones.find((z) => z.type !== 'internet')?.id ?? lab.zones[0]?.id;
+  };
+
+  const onDrop = (e: DragEvent) => {
+    const type = e.dataTransfer.getData(NODE_DRAG_TYPE);
+    if (!editing || !isNodeType(type)) return;
+    e.preventDefault();
+    const point = screenToFlowPosition({ x: e.clientX, y: e.clientY });
+    const zone = zoneAt(point);
+    if (!zone) return;
+    const position = freeSpot(lab, { x: Math.round(point.x - NODE_WIDTH / 2), y: Math.round(point.y - NODE_HEIGHT / 2) });
+    let id = '';
+    edit((l) => {
+      const r = addNode(l, type, { [locale]: f.t(`nodeType.${type}`) }, position, zone);
+      id = r.id;
+      return r.lab;
+    });
+    select({ kind: 'node', id });
+  };
 
   return (
     <ViewContext.Provider value={view}>
       <ReactFlow
+        key={lab.id}
+        className={editing ? 'is-editing' : undefined}
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onNodeDragStop={(_e, node) => moveNode(node.id, node.position)}
-        onSelectionChange={({ nodes: selected }) => selectNode(selected.find((n) => n.type === 'asset')?.id ?? null)}
-        nodesConnectable={false}
-        edgesFocusable={false}
+        onNodeClick={(_e, node) => node.type === 'asset' && select({ kind: 'node', id: node.id })}
+        onEdgeClick={(_e, edge) => editing && edge.type === 'flow' && select({ kind: 'edge', id: edge.id.slice(5) })}
+        onPaneClick={() => select(null)}
+        onNodesDelete={(deleted) => {
+          const ids = deleted.filter((n) => n.type === 'asset').map((n) => n.id);
+          if (ids.length) edit((l) => removeNodes(l, ids));
+          select(null);
+        }}
+        onEdgesDelete={(deleted) => {
+          const ids = deleted.filter((e) => e.type === 'flow').map((e) => e.id.slice(5));
+          if (ids.length) edit((l) => removeEdges(l, ids));
+          select(null);
+        }}
+        onConnect={(c: Connection) => {
+          if (!editing || !c.source || !c.target) return;
+          let id: string | null = null;
+          edit((l) => {
+            const r = addEdge(l, c.source, c.target);
+            id = r.id;
+            return r.lab;
+          });
+          if (id) select({ kind: 'edge', id });
+        }}
+        onDragOver={(e) => {
+          if (editing && e.dataTransfer.types.includes(NODE_DRAG_TYPE)) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+          }
+        }}
+        onDrop={onDrop}
+        nodesConnectable={editing}
+        connectionMode={ConnectionMode.Loose}
+        deleteKeyCode={editing ? ['Delete', 'Backspace'] : null}
+        edgesFocusable={editing}
         colorMode={theme}
         fitView
-        fitViewOptions={{ padding: 0.12 }}
+        fitViewOptions={{ padding: 0.12, maxZoom: 1 }}
         minZoom={0.25}
         maxZoom={2}
         aria-label={f.text(lab.meta.title)}
@@ -341,4 +425,8 @@ export function Canvas() {
       </ReactFlow>
     </ViewContext.Provider>
   );
+}
+
+function isNodeType(value: string): value is NodeType {
+  return (NODE_TYPES as readonly string[]).includes(value);
 }
