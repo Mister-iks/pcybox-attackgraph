@@ -2,15 +2,48 @@
   "name": "@pcybox/attackgraph-i18n",
   "version": "0.2.0",
   "description": "Messages (ICU) and lab text formatting shared by the PCYBOX AttackGraph app and command line tool.",
+  "keywords": [
+    "attack-path",
+    "attack-graph",
+    "cybersecurity",
+    "education",
+    "mitre-attack",
+    "threat-modeling",
+    "i18n"
+  ],
   "license": "Apache-2.0",
-  "private": true,
+  "homepage": "https://mister-iks.github.io/pcybox-attackgraph/",
+  "bugs": "https://github.com/Mister-iks/pcybox-attackgraph/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mister-iks/pcybox-attackgraph.git",
+    "directory": "packages/i18n"
+  },
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./messages/*.json": "./messages/*.json"
   },
+  "files": [
+    "dist",
+    "messages"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
     "typecheck": "tsc -p tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./messages/*.json": "./messages/*.json"
+    }
   },
   "dependencies": {
     "@pcybox/attackgraph-engine": "workspace:*"

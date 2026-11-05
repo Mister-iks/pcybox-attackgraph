@@ -98,6 +98,15 @@ pnpm attackgraph compare content/templates/web-application.attackgraph.json --en
 pnpm attackgraph simulate <lab> --format markdown   # or json, for other tools
 ```
 
+### Use the engine in your own project
+
+```bash
+npm install @pcybox/attackgraph-engine   # simulation engine, pure TypeScript
+npx @pcybox/attackgraph-cli validate labs/   # command line tool, no install
+```
+
+See the [engine package](packages/engine/README.md) for an example.
+
 Performance budget: at most 250 kB of initial JavaScript (gzip). The CI fails above it.
 
 ## Roadmap
@@ -105,8 +114,8 @@ Performance budget: at most 250 kB of initial JavaScript (gzip). The CI fails ab
 | Version | Focus |
 |---|---|
 | v0.1 | One network, one attack, one defense: the Web Application template |
-| **v0.2** (in progress) | Lab editor, 3 templates, command line tool |
-| v0.3 | Attack paths, choke points, blast radius, embeddable view, offline PWA |
+| v0.2 (released) | Lab editor, 3 templates, command line tool, packages on npm |
+| **v0.3** (next) | Detection controls, attack paths, choke points, blast radius, embeddable view, offline PWA |
 | v0.5 | Challenge mode, teacher mode, 10 missions aligned with NICE, ECSF and CyBOK |
 | v1.0 | Stable format, 8 templates, 9 languages including Arabic and Chinese |
 

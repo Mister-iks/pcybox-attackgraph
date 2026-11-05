@@ -39,6 +39,15 @@ Ouvrez l'adresse affichée, choisissez **Français** en haut à droite, cliquez 
 
 Clavier : `Espace` lit ou met en pause, les flèches avancent ou reculent d'une étape, `Début` revient au départ.
 
+### Utiliser le moteur dans votre projet
+
+```bash
+npm install @pcybox/attackgraph-engine   # moteur de simulation, TypeScript pur
+npx @pcybox/attackgraph-cli validate labs/ --lang fr   # outil en ligne de commande, sans installation
+```
+
+Un exemple est donné dans le [README du moteur](packages/engine/README.md).
+
 ## Contribuer
 
 Les contributions sont les bienvenues : code, labs, traductions, et relecture du catalogue de techniques par des praticiens de la sécurité. Commencez par [CONTRIBUTING.md](CONTRIBUTING.md).
