@@ -4,8 +4,13 @@ All notable changes are documented here. The project follows [Semantic Versionin
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-05
+
+First versioned release. The live demo has been online since v0.1; from now on, every release is tagged and its packages are published on npm.
+
 ### Added
 
+- Packages on npm: `@pcybox/attackgraph-engine`, `@pcybox/attackgraph-cli` (run it with `npx @pcybox/attackgraph-cli`), `@pcybox/attackgraph-i18n` and `@pcybox/attackgraph-schema`.
 - Controls `least-privilege` (revoke a right, which also removes the credential it leaves cached) and `credential-protection`.
 - Templates: Small Office and Active Directory.
 - Lab editor: palette with drag and drop, connections between elements, forms for services, weaknesses, credentials, identities, assets, controls and scenarios, live problem detection, undo and redo, duplicate, arrange by zone, autosave in the browser.
@@ -18,3 +23,6 @@ All notable changes are documented here. The project follows [Semantic Versionin
 - Sharing by link (lab in the URL fragment), export and import of lab files.
 - English and French, light and dark themes, keyboard shortcuts, reduced motion.
 - CI: text check, types, unit tests, build, 250 kB bundle budget, Playwright tests on desktop and mobile.
+
+[Unreleased]: https://github.com/Mister-iks/pcybox-attackgraph/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Mister-iks/pcybox-attackgraph/releases/tag/v0.2.0

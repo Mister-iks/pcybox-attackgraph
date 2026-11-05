@@ -1,16 +1,47 @@
 {
   "name": "@pcybox/attackgraph-engine",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Deterministic, explainable attack path simulation engine for PCYBOX AttackGraph.",
+  "keywords": [
+    "attack-path",
+    "attack-graph",
+    "cybersecurity",
+    "education",
+    "mitre-attack",
+    "threat-modeling",
+    "simulation"
+  ],
   "license": "Apache-2.0",
-  "private": true,
+  "homepage": "https://mister-iks.github.io/pcybox-attackgraph/",
+  "bugs": "https://github.com/Mister-iks/pcybox-attackgraph/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mister-iks/pcybox-attackgraph.git",
+    "directory": "packages/engine"
+  },
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
   },
   "devDependencies": {
     "@types/node": "^26.6.2",

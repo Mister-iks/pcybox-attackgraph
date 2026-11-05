@@ -30,6 +30,7 @@ jobs:
       - run: pnpm test
       - run: pnpm build
       - run: pnpm check:bundle
+      - run: pnpm build:packages
 
   e2e:
     name: End-to-end tests

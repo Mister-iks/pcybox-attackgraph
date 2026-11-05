@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "pnpm --filter @pcybox/attackgraph-web dev",
     "build": "pnpm --filter @pcybox/attackgraph-web build",
+    "build:packages": "pnpm --filter \"./packages/**\" build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "check:text": "node scripts/check-text.mjs",
@@ -16,7 +17,7 @@
     "attackgraph": "node packages/cli/src/cli.ts",
     "check:content": "node packages/cli/src/cli.ts validate content/templates",
     "e2e": "pnpm --filter @pcybox/attackgraph-web e2e",
-    "verify": "pnpm check:text && pnpm check:content && pnpm typecheck && pnpm test && pnpm build && pnpm check:bundle"
+    "verify": "pnpm check:text && pnpm check:content && pnpm typecheck && pnpm test && pnpm build && pnpm check:bundle && pnpm build:packages"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",

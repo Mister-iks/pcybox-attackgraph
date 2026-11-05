@@ -2,18 +2,43 @@
   "name": "@pcybox/attackgraph-cli",
   "version": "0.2.0",
   "description": "Command line tool of PCYBOX AttackGraph: validate labs, simulate scenarios, compare controls.",
+  "keywords": [
+    "attack-path",
+    "attack-graph",
+    "cybersecurity",
+    "education",
+    "mitre-attack",
+    "threat-modeling",
+    "cli"
+  ],
   "license": "Apache-2.0",
-  "private": true,
+  "homepage": "https://mister-iks.github.io/pcybox-attackgraph/",
+  "bugs": "https://github.com/Mister-iks/pcybox-attackgraph/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mister-iks/pcybox-attackgraph.git",
+    "directory": "packages/cli"
+  },
   "type": "module",
   "bin": {
     "attackgraph": "./src/cli.ts"
   },
+  "files": [
+    "dist"
+  ],
   "engines": {
-    "node": ">=22.18"
+    "node": ">=22"
   },
   "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public",
+    "bin": {
+      "attackgraph": "./dist/cli.js"
+    }
   },
   "dependencies": {
     "@pcybox/attackgraph-engine": "workspace:*",

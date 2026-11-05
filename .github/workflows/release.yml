@@ -1,0 +1,48 @@
+name: Release
+
+# Publishes the packages on npm and creates the GitHub release when a version tag is pushed.
+# Tag format: v0.2.0. The tag must match the version of every package.
+# Requires the NPM_TOKEN secret (an npm automation token with publish rights on the @pcybox scope).
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      - name: Check that the tag matches the package versions
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          for pkg in packages/*/package.json; do
+            actual=$(node -p "require('./$pkg').version")
+            if [ "$actual" != "$version" ]; then
+              echo "$pkg has version $actual, expected $version"
+              exit 1
+            fi
+          done
+      - run: pnpm verify
+      - name: Publish on npm (with provenance)
+        run: pnpm --filter "./packages/**" publish --access public --no-git-checks --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'
+      - name: Create the GitHub release from the changelog
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v h="## [$version]" 'index($0, h) == 1 {on=1; next} on && /^## / {exit} on && !/^\[/ {print}' CHANGELOG.md > notes.md
+          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -1,16 +1,38 @@
 {
   "name": "@pcybox/attackgraph-schema",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "JSON Schema of the .attackgraph.json lab format.",
+  "keywords": [
+    "attack-path",
+    "attack-graph",
+    "cybersecurity",
+    "education",
+    "mitre-attack",
+    "threat-modeling",
+    "json-schema"
+  ],
   "license": "Apache-2.0",
-  "private": true,
+  "homepage": "https://mister-iks.github.io/pcybox-attackgraph/",
+  "bugs": "https://github.com/Mister-iks/pcybox-attackgraph/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mister-iks/pcybox-attackgraph.git",
+    "directory": "packages/schema"
+  },
   "type": "module",
   "exports": {
     "./lab.schema.json": "./lab.schema.json"
   },
+  "files": [
+    "lab.schema.json",
+    "README.md"
+  ],
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@types/node": "^26.6.2",
